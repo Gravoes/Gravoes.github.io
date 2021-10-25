@@ -1,46 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Typora使用指南</title>
-    <url>/2021/10/24/Typora%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<h1 id="Typora使用指南"><a href="#Typora使用指南" class="headerlink" title="Typora使用指南"></a>Typora使用指南</h1><blockquote>
-<p>​    主要包含一些markdown的快捷键</p>
-</blockquote>
-<span id="more"></span>
-
-<p>无序列表：输入**-之后输入空格** / ctrl + shift + ] (对选中行可用)<br>有序列表：输入<strong>数字+“.”之后输入空格</strong> / ctrl + shift + [ (对选中行可用)<br>引用内容：**&gt; + 空格** / ctrl + shift + q (对选中内容可用)<br>任务列表：-[空格]空格 文字<br>标题：ctrl+数字<br>表格：ctrl+t<br>目录：[TOC]<br>任务列表：- [ ] 文字（注意 “-” 后与 “[]“ 中间都有空格）<br>选中一整行：ctrl+l (字母L)<br>选中单词：ctrl+d<br>选中相同格式的文字：ctrl+e<br>跳转到文章开头：ctrl+home<br>跳转到文章结尾：ctrl+end<br>搜索：ctrl+f<br>替换：ctrl+h<br>引用：输入&gt;之后输入空格<br>代码块：```+语言  / ctrl + shift + k<br>加粗：ctrl+b<br>倾斜：ctrl+i<br>下划线：ctrl+u<br>删除线：alt+shift+5<br>插入图片：直接拖动到指定位置即可或者ctrl+shift+i<br>插入链接：ctrl + k</p>
-<p>错误:OpenSSL SSL_read: Connection was aborted, errno 10053</p>
-<p>超出文件限制</p>
-<pre class=" language-linux"><code class="language-linux">git config --global http.postBuffer 524288000
-</code></pre>
-]]></content>
-      <tags>
-        <tag>指南</tag>
-        <tag>Typora</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2021/10/24/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class=" language-bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span>
-</code></pre>
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class=" language-bash"><code class="language-bash">$ hexo server
-</code></pre>
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class=" language-bash"><code class="language-bash">$ hexo generate
-</code></pre>
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class=" language-bash"><code class="language-bash">$ hexo deploy
-</code></pre>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>SSM配置文件</title>
     <url>/2021/10/25/SSM%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</url>
-    <content><![CDATA[<h1 id="SSM框架配置文件"><a href="#SSM框架配置文件" class="headerlink" title="SSM框架配置文件"></a>SSM框架配置文件</h1><blockquote>
+    <content><![CDATA[<html><head></head><body><h1 id="SSM框架配置文件"><a href="#SSM框架配置文件" class="headerlink" title="SSM框架配置文件"></a>SSM框架配置文件</h1><blockquote>
 <p>​    当我们学习到SSM整合时。令程序员最大的烦恼就是要写一大堆配置文件，纵然记忆力再好，怕也是记不住，相信每个人都会把这些配置文件写下来，创建项目的时候直接CV就完事了。</p>
 </blockquote>
 <span id="more"></span>
@@ -72,10 +35,10 @@ http://www.springframework.org/schema/context/spring-context.xsd<span class="tok
 
     <span class="token comment" spellcheck="true">&lt;!-- 配置数据源--></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bean</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>dataSource<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>com.mchange.v2.c3p0.ComboPooledDataSource<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>driverClass<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>$&amp;#123;jdbc.driver&amp;#125;<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>jdbcUrl<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>$&amp;#123;jdbc.url&amp;#125;<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>user<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>$&amp;#123;jdbc.user&amp;#125;<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>$&amp;#123;jdbc.password&amp;#125;<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>driverClass<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>${jdbc.driver}<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>jdbcUrl<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>${jdbc.url}<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>user<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>${jdbc.user}<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>${jdbc.password}<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>bean</span><span class="token punctuation">></span></span>
 
     <span class="token comment" spellcheck="true">&lt;!-- 配置SqlSessionFactory--></span>
@@ -262,7 +225,7 @@ http://www.springframework.org/schema/context/spring-context.xsd<span class="tok
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mapper</span> <span class="token attr-name">namespace</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>com.star.dao.AccountDao<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
 
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>insert</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>insertAccount<span class="token punctuation">"</span></span> <span class="token attr-name">parameterType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Account<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-        insert into account(name, money) VALUES (#<span class="token entity" title="&#123;">&amp;#123;</span>name<span class="token entity" title="&#125;">&amp;#125;</span>,#<span class="token entity" title="&#123;">&amp;#123;</span>money<span class="token entity" title="&#125;">&amp;#125;</span>)
+        insert into account(name, money) VALUES (#{name},#{money})
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>insert</span><span class="token punctuation">></span></span>
 
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectAll<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>com.star.domain.Account<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -270,7 +233,7 @@ http://www.springframework.org/schema/context/spring-context.xsd<span class="tok
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
 
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>selectAccountById<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>com.star.domain.Account<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-        select * from account where id=#<span class="token entity" title="&#123;">&amp;#123;</span>id<span class="token entity" title="&#125;">&amp;#125;</span>
+        select * from account where id=#{id}
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>mapper</span><span class="token punctuation">></span></span>
 </code></pre>
@@ -290,13 +253,13 @@ http://www.springframework.org/schema/context/spring-context.xsd<span class="tok
 <span class="token attr-name">log4j.appender.stdout</span><span class="token punctuation">=</span><span class="token attr-value">org.apache.log4j.ConsoleAppender</span>
 <span class="token attr-name">log4j.appender.stdout.Target</span><span class="token punctuation">=</span><span class="token attr-value">System.err</span>
 <span class="token attr-name">log4j.appender.stdout.layout</span><span class="token punctuation">=</span><span class="token attr-value">org.apache.log4j.PatternLayout</span>
-<span class="token attr-name">log4j.appender.stdout.layout.ConversionPattern</span><span class="token punctuation">=</span><span class="token attr-value">%d&amp;#123;ABSOLUTE&amp;#125; %5p %c&amp;#123;1&amp;#125;:%L - %m%n</span>
+<span class="token attr-name">log4j.appender.stdout.layout.ConversionPattern</span><span class="token punctuation">=</span><span class="token attr-value">%d{ABSOLUTE} %5p %c{1}:%L - %m%n</span>
 
 <span class="token comment" spellcheck="true">### direct messages to file hibernate.log ###</span>
 <span class="token comment" spellcheck="true">#log4j.appender.file=org.apache.log4j.FileAppender</span>
 <span class="token comment" spellcheck="true">#log4j.appender.file.File=hibernate.log</span>
 <span class="token comment" spellcheck="true">#log4j.appender.file.layout=org.apache.log4j.PatternLayout</span>
-<span class="token comment" spellcheck="true">#log4j.appender.file.layout.ConversionPattern=%d&amp;#123;ABSOLUTE&amp;#125; %5p %c&amp;#123;1&amp;#125;:%L - %m%n</span>
+<span class="token comment" spellcheck="true">#log4j.appender.file.layout.ConversionPattern=%d{ABSOLUTE} %5p %c{1}:%L - %m%n</span>
 
 <span class="token comment" spellcheck="true">### set log levels - for more verbose logging change 'info' to 'debug' ###</span>
 
@@ -415,12 +378,49 @@ http://www.springframework.org/schema/context/spring-context.xsd<span class="tok
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>build</span><span class="token punctuation">></span></span>
 </code></pre>
 <p><img src="https://qiniu.sukoshi.xyz/src/images/68686407_p0.jpg"></p>
-]]></content>
+</body></html>]]></content>
       <categories>
         <category>SSM</category>
       </categories>
       <tags>
         <tag>配置</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Typora使用指南</title>
+    <url>/2021/10/24/Typora%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<html><head></head><body><h1 id="Typora使用指南"><a href="#Typora使用指南" class="headerlink" title="Typora使用指南"></a>Typora使用指南</h1><blockquote>
+<p>​    主要包含一些markdown的快捷键</p>
+</blockquote>
+<span id="more"></span>
+
+<p>无序列表：输入**-之后输入空格** / ctrl + shift + ] (对选中行可用)<br>有序列表：输入<strong>数字+“.”之后输入空格</strong> / ctrl + shift + [ (对选中行可用)<br>引用内容：**&gt; + 空格** / ctrl + shift + q (对选中内容可用)<br>任务列表：-[空格]空格 文字<br>标题：ctrl+数字<br>表格：ctrl+t<br>目录：[TOC]<br>任务列表：- [ ] 文字（注意 “-” 后与 “[]“ 中间都有空格）<br>选中一整行：ctrl+l (字母L)<br>选中单词：ctrl+d<br>选中相同格式的文字：ctrl+e<br>跳转到文章开头：ctrl+home<br>跳转到文章结尾：ctrl+end<br>搜索：ctrl+f<br>替换：ctrl+h<br>引用：输入&gt;之后输入空格<br>代码块：```+语言  / ctrl + shift + k<br>加粗：ctrl+b<br>倾斜：ctrl+i<br>下划线：ctrl+u<br>删除线：alt+shift+5<br>插入图片：直接拖动到指定位置即可或者ctrl+shift+i<br>插入链接：ctrl + k</p>
+<p>错误:OpenSSL SSL_read: Connection was aborted, errno 10053</p>
+<p>超出文件限制</p>
+<pre class=" language-linux"><code class="language-linux">git config --global http.postBuffer 524288000
+</code></pre>
+</body></html>]]></content>
+      <tags>
+        <tag>指南</tag>
+        <tag>Typora</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/10/24/hello-world/</url>
+    <content><![CDATA[<html><head></head><body><p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class=" language-bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span>
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class=" language-bash"><code class="language-bash">$ hexo server
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class=" language-bash"><code class="language-bash">$ hexo generate
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class=" language-bash"><code class="language-bash">$ hexo deploy
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+</body></html>]]></content>
   </entry>
 </search>
