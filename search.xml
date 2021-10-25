@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Typora使用指南</title>
+    <url>/2021/10/24/Typora%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h1 id="Typora使用指南"><a href="#Typora使用指南" class="headerlink" title="Typora使用指南"></a>Typora使用指南</h1><blockquote>
+<p>​    主要包含一些markdown的快捷键</p>
+</blockquote>
+<span id="more"></span>
+
+<p>无序列表：输入**-之后输入空格** / ctrl + shift + ] (对选中行可用)<br>有序列表：输入<strong>数字+“.”之后输入空格</strong> / ctrl + shift + [ (对选中行可用)<br>引用内容：**&gt; + 空格** / ctrl + shift + q (对选中内容可用)<br>任务列表：-[空格]空格 文字<br>标题：ctrl+数字<br>表格：ctrl+t<br>目录：[TOC]<br>任务列表：- [ ] 文字（注意 “-” 后与 “[]“ 中间都有空格）<br>选中一整行：ctrl+l (字母L)<br>选中单词：ctrl+d<br>选中相同格式的文字：ctrl+e<br>跳转到文章开头：ctrl+home<br>跳转到文章结尾：ctrl+end<br>搜索：ctrl+f<br>替换：ctrl+h<br>引用：输入&gt;之后输入空格<br>代码块：```+语言  / ctrl + shift + k<br>加粗：ctrl+b<br>倾斜：ctrl+i<br>下划线：ctrl+u<br>删除线：alt+shift+5<br>插入图片：直接拖动到指定位置即可或者ctrl+shift+i<br>插入链接：ctrl + k</p>
+<p>错误:OpenSSL SSL_read: Connection was aborted, errno 10053</p>
+<p>超出文件限制</p>
+<pre class=" language-linux"><code class="language-linux">git config --global http.postBuffer 524288000
+</code></pre>
+]]></content>
+      <tags>
+        <tag>指南</tag>
+        <tag>Typora</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/10/24/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class=" language-bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span>
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class=" language-bash"><code class="language-bash">$ hexo server
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class=" language-bash"><code class="language-bash">$ hexo generate
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class=" language-bash"><code class="language-bash">$ hexo deploy
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
     <title>SSM配置文件</title>
     <url>/2021/10/25/SSM%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</url>
     <content><![CDATA[<h1 id="SSM框架配置文件"><a href="#SSM框架配置文件" class="headerlink" title="SSM框架配置文件"></a>SSM框架配置文件</h1><blockquote>
@@ -385,42 +422,5 @@ http://www.springframework.org/schema/context/spring-context.xsd<span class="tok
       <tags>
         <tag>配置</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Typora使用指南</title>
-    <url>/2021/10/24/Typora%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<h1 id="Typora使用指南"><a href="#Typora使用指南" class="headerlink" title="Typora使用指南"></a>Typora使用指南</h1><blockquote>
-<p>​    主要包含一些markdown的快捷键</p>
-</blockquote>
-<span id="more"></span>
-
-<p>无序列表：输入**-之后输入空格** / ctrl + shift + ] (对选中行可用)<br>有序列表：输入<strong>数字+“.”之后输入空格</strong> / ctrl + shift + [ (对选中行可用)<br>引用内容：**&gt; + 空格** / ctrl + shift + q (对选中内容可用)<br>任务列表：-[空格]空格 文字<br>标题：ctrl+数字<br>表格：ctrl+t<br>目录：[TOC]<br>任务列表：- [ ] 文字（注意 “-” 后与 “[]“ 中间都有空格）<br>选中一整行：ctrl+l (字母L)<br>选中单词：ctrl+d<br>选中相同格式的文字：ctrl+e<br>跳转到文章开头：ctrl+home<br>跳转到文章结尾：ctrl+end<br>搜索：ctrl+f<br>替换：ctrl+h<br>引用：输入&gt;之后输入空格<br>代码块：```+语言  / ctrl + shift + k<br>加粗：ctrl+b<br>倾斜：ctrl+i<br>下划线：ctrl+u<br>删除线：alt+shift+5<br>插入图片：直接拖动到指定位置即可或者ctrl+shift+i<br>插入链接：ctrl + k</p>
-<p>错误:OpenSSL SSL_read: Connection was aborted, errno 10053</p>
-<p>超出文件限制</p>
-<pre class=" language-linux"><code class="language-linux">git config --global http.postBuffer 524288000
-</code></pre>
-]]></content>
-      <tags>
-        <tag>指南</tag>
-        <tag>Typora</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2021/10/24/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class=" language-bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span>
-</code></pre>
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class=" language-bash"><code class="language-bash">$ hexo server
-</code></pre>
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class=" language-bash"><code class="language-bash">$ hexo generate
-</code></pre>
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class=" language-bash"><code class="language-bash">$ hexo deploy
-</code></pre>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
 </search>
