@@ -54,9 +54,17 @@
 <body>
   <div id="app">
     
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
       
-      <canvas width="1777" height="841"
-        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
       
     <main class="content on">
       
@@ -204,7 +212,9 @@
       
     <div class="article-entry" itemprop="articleBody">
        
-  <h1 id="SSM框架配置文件"><a href="#SSM框架配置文件" class="headerlink" title="SSM框架配置文件"></a>SSM框架配置文件</h1> 
+  <h1 id="SSM框架配置文件"><a href="#SSM框架配置文件" class="headerlink" title="SSM框架配置文件"></a>SSM框架配置文件</h1><blockquote>
+<p>​    当我们学习到SSM整合时。令程序员最大的烦恼就是要写一大堆配置文件，纵然记忆力再好，怕也是记不住，相信每个人都会把这些配置文件写下来，创建项目的时候直接CV就完事了。</p>
+</blockquote> 
       <a class="article-more-link" href="/2021/10/25/SSM%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/"
         >阅读更多...</a
       >
@@ -258,10 +268,12 @@
     <div class="article-entry" itemprop="articleBody">
        
   <h1 id="Typora使用指南"><a href="#Typora使用指南" class="headerlink" title="Typora使用指南"></a>Typora使用指南</h1><blockquote>
-<p>快捷键</p>
-</blockquote>
-<p>无序列表：输入**-之后输入空格** / ctrl + shift + ] (对选中行可用)<br>有序列表：输入<strong>数字+“.”之后输入空格</strong> / ctrl + shift + [ (对选中行可用)<br>引用内容：**&gt; + 空格** / ctrl + shift + q (对选中内容可用)<br>任务列表：-[空格]空格 文字<br>标题：ctrl+数字<br>表格：ctrl+t<br>目录：[TOC]<br>任务列表：- [ ] 文字（注意 “-” 后与 “[]“ 中间都有空格）<br>选中一整行：ctrl+l (字母L)<br>选中单词：ctrl+d<br>选中相同格式的文字：ctrl+e<br>跳转到文章开头：ctrl+home<br>跳转到文章结尾：ctrl+end<br>搜索：ctrl+f<br>替换：ctrl+h<br>引用：输入&gt;之后输入空格<br>代码块：```+语言  / ctrl + shift + k<br>加粗：ctrl+b<br>倾斜：ctrl+i<br>下划线：ctrl+u<br>删除线：alt+shift+5<br>插入图片：直接拖动到指定位置即可或者ctrl+shift+i<br>插入链接：ctrl + k</p>
- 
+<p>​    主要包含一些markdown的快捷键</p>
+</blockquote> 
+      <a class="article-more-link" href="/2021/10/24/Typora%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"
+        >阅读更多...</a
+      >
+       
       <!-- reward -->
       
     </div>
@@ -429,7 +441,7 @@
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" target="_blank" rel="noopener" href="http://shenyu-vip.lofter.com">摄影</a>
+      <a class="nav-item-link" target="_blank" rel="noopener" href="http://guozhivip.com/bz/">图库</a>
     </li>
     
     <li class="nav-item">
@@ -437,7 +449,7 @@
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/2019/about">关于我</a>
+      <a class="nav-item-link" href="/about">关于我</a>
     </li>
     
   </ul>
@@ -617,10 +629,12 @@
 
 <!-- ClickBoom1 -->
 
+<script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
 <!-- ClickBoom2 -->
- 
-<script src="/js/clickBoom2.js"></script>
- 
+
 <!-- CodeCopy -->
  
 <link rel="stylesheet" href="/css/clipboard.css">
@@ -694,7 +708,7 @@
     
     
     <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+        src="//music.163.com/outchain/player?type=2&id=404716896&auto=1&height=32"></iframe>
 </div>
 
 <style>
