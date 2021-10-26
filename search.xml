@@ -389,14 +389,189 @@ http://www.springframework.org/schema/context/spring-context.xsd<span class="tok
   <entry>
     <title>Typora使用指南</title>
     <url>/2021/10/24/Typora%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<html><head></head><body><h1 id="Typora使用指南"><a href="#Typora使用指南" class="headerlink" title="Typora使用指南"></a>Typora使用指南</h1><blockquote>
-<p>​    主要包含一些markdown的快捷键</p>
-</blockquote>
+    <content><![CDATA[<html><head></head><body><h1 id="Typora使用指南"><a href="#Typora使用指南" class="headerlink" title="Typora使用指南"></a>Typora使用指南</h1><p>Markdown是一种轻量级标记语言，创始人是约翰·格鲁伯(John Gruber)。它允许人们使用易读易写的纯文本格式编写文档，然后转换成有效的XHTML(或者HTML)文档。由于Markdown的轻量化、易读易写特性，并且对于图片，图表、数学式都有支持，目前许多网站都广泛使用Markdown来撰写帮助文档或是用于论坛上发表消息。</p>
 <span id="more"></span>
 
-<p>无序列表：输入**-之后输入空格** / ctrl + shift + ] (对选中行可用)<br>有序列表：输入<strong>数字+“.”之后输入空格</strong> / ctrl + shift + [ (对选中行可用)<br>引用内容：**&gt; + 空格** / ctrl + shift + q (对选中内容可用)<br>任务列表：-[空格]空格 文字<br>标题：ctrl+数字<br>表格：ctrl+t<br>目录：[TOC]<br>任务列表：- [ ] 文字（注意 “-” 后与 “[]“ 中间都有空格）<br>选中一整行：ctrl+l (字母L)<br>选中单词：ctrl+d<br>选中相同格式的文字：ctrl+e<br>跳转到文章开头：ctrl+home<br>跳转到文章结尾：ctrl+end<br>搜索：ctrl+f<br>替换：ctrl+h<br>引用：输入&gt;之后输入空格<br>代码块：```+语言  / ctrl + shift + k<br>加粗：ctrl+b<br>倾斜：ctrl+i<br>下划线：ctrl+u<br>删除线：alt+shift+5<br>插入图片：直接拖动到指定位置即可或者ctrl+shift+i<br>插入链接：ctrl + k</p>
-<p>错误:OpenSSL SSL_read: Connection was aborted, errno 10053</p>
+<h2 id="1-快捷键和语法"><a href="#1-快捷键和语法" class="headerlink" title="1.快捷键和语法"></a>1.快捷键和语法</h2><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>快捷键/语法</th>
+<th align="left">效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>加粗</td>
+<td>Ctrl+B 或者 <code>**加粗**</code> 或者 <code>__加粗__</code></td>
+<td align="left"><strong>加粗</strong></td>
+</tr>
+<tr>
+<td>斜体</td>
+<td>Ctrl+i 或者 <code>*斜体*</code> 或者 <code>_斜体_</code></td>
+<td align="left"><em>斜体</em></td>
+</tr>
+<tr>
+<td>加粗切斜体</td>
+<td><code>***加粗且斜体***</code> 或者 <code>___加粗且斜体___</code></td>
+<td align="left"><em><strong>加粗切斜体</strong></em></td>
+</tr>
+<tr>
+<td>下划线</td>
+<td>Ctrl+U 或者 <code>下划线</code></td>
+<td align="left"><u>下划线</u></td>
+</tr>
+<tr>
+<td>删除线</td>
+<td>Alt+Shift+5 或者 <code>~~删除线~~</code></td>
+<td align="left"><del>删除线</del></td>
+</tr>
+<tr>
+<td>水平分割线</td>
+<td>***<code>或者</code>- - -<code>或者</code>_ _ _</td>
+<td align="left">—-</td>
+</tr>
+<tr>
+<td>高亮</td>
+<td><code>==高亮==</code></td>
+<td align="left">==高亮==</td>
+</tr>
+<tr>
+<td>下标</td>
+<td><code>~下标~</code></td>
+<td align="left">下标<del>2</del></td>
+</tr>
+<tr>
+<td>上标</td>
+<td><code>^上标^</code></td>
+<td align="left">上标^2^</td>
+</tr>
+<tr>
+<td>注释</td>
+<td>[^注释1]</td>
+<td align="left">[^注释]</td>
+</tr>
+<tr>
+<td>代码块</td>
+<td>Ctrl+Shift+` 或者 ```</td>
+<td align="left">```java</td>
+</tr>
+<tr>
+<td>选中一行</td>
+<td>Ctrl+L</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>选中一个单词</td>
+<td>Ctrl+D</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>选中相同格式的文字</td>
+<td>Ctrl+E</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>生成目录</td>
+<td>[TOC]</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>一级标题</td>
+<td>Ctrl+1 或者 #+空格+文字</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>二级标题</td>
+<td>Ctrl+2 或者 ##+空格+文字</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>三级标题</td>
+<td>Ctrl+3 或者 ###+空格+文字</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>四级标题</td>
+<td>Ctrl+4 或者 ####+空格+文字</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>五级标题</td>
+<td>Ctrl+5 或者 #####+空格+文字</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>六级标题</td>
+<td>Ctrl+6 或者 ######+空格+文字</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>返回顶部</td>
+<td>Ctrl+Home</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>创建表格</td>
+<td>Ctrl+T</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>创建超链接</td>
+<td>Ctrl+K 或者 <code>[链接名称](链接地址)</code></td>
+<td align="left">百度</td>
+</tr>
+<tr>
+<td>搜索并替换</td>
+<td>Ctrl+H</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>插入图片</td>
+<td>Ctrl+Shift+I 或者 复制粘贴 或者 直接拖动 或者<code>![图片的替代文字](图片地址)</code></td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>表情</td>
+<td><code>:happy:</code> 或者 <code>:smiley:</code> 或者 <code>:cry:</code></td>
+<td align="left">:happy::smiley:</td>
+</tr>
+<tr>
+<td>向右缩进</td>
+<td>Tab</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>向左缩进</td>
+<td>Shift+Tab</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>引用</td>
+<td>Ctrl+Shift+Q 或者 &gt;+空格</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>有序列表</td>
+<td>Ctrl+Shift+[ 或者 *+空格</td>
+<td align="left">/</td>
+</tr>
+<tr>
+<td>无序列表</td>
+<td>Ctrl+Shift+] 或者 *+空格</td>
+<td align="left">/</td>
+</tr>
+</tbody></table>
+<h2 id="2-Typora主题推荐"><a href="#2-Typora主题推荐" class="headerlink" title="2.Typora主题推荐"></a>2.Typora主题推荐</h2><blockquote>
+<p><a href="https://github.com/Theigrams/My-Typora-Themes">My-Typora-Themes</a> 点击链接即可下载</p>
+</blockquote>
+<blockquote>
+<p>样式预览</p>
+</blockquote>
+<p><img src="/../images/Typora%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/image-20211026104218400.png" alt="image-20211026104218400"></p>
+<h2 id="3-hexo常见错误"><a href="#3-hexo常见错误" class="headerlink" title="3.hexo常见错误"></a>3.hexo常见错误</h2><blockquote>
 <p>超出文件限制</p>
+</blockquote>
+<p>错误:OpenSSL SSL_read: Connection was aborted, errno 10053</p>
 <pre class=" language-linux"><code class="language-linux">git config --global http.postBuffer 524288000
 </code></pre>
 </body></html>]]></content>
