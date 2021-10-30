@@ -4489,4 +4489,157 @@ Season winter <span class="token operator">=</span> Season<span class="token pun
         <tag>基础</tag>
       </tags>
   </entry>
+  <entry>
+    <title>nginx知识点</title>
+    <url>/2021/10/30/null/</url>
+    <content><![CDATA[<html><head></head><body><h1 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h1><h2 id="1-Nginx-简介"><a href="#1-Nginx-简介" class="headerlink" title="1. Nginx 简介"></a>1. Nginx 简介</h2><h3 id="1-1-Nginx-概述"><a href="#1-1-Nginx-概述" class="headerlink" title="1.1 Nginx 概述"></a>1.1 Nginx 概述</h3><p>Nginx (“engine x”) 是一个高性能的 HTTP 和反向代理服务器,特点是占有内存少，并发能 力强,事实上 nginx 的并发能力确实在同类型的网页服务器中表现较好，中国大陆使用 nginx 网站用户有：百度、京东、新浪、网易、腾讯、淘宝等</p>
+<h3 id="1-2-Nginx-作为-web-服务器"><a href="#1-2-Nginx-作为-web-服务器" class="headerlink" title="1.2 Nginx 作为 web 服务器"></a>1.2 Nginx 作为 web 服务器</h3><p>Nginx 可以作为静态页面的 web 服务器，同时还支持 CGI 协议的动态语言，比如 perl、php 等。但是不支持 java。Java 程序只能通过与 tomcat 配合完成。Nginx 专为性能优化而开发， 性能是其最重要的考量,实现上非常注重效率 ，能经受高负载的考验,有报告表明能支持高 达 50,000 个并发连接数。</p>
+<h3 id="1-3-正向代理"><a href="#1-3-正向代理" class="headerlink" title="1.3 正向代理"></a>1.3 正向代理</h3><p>Nginx 不仅可以做反向代理，实现负载均衡。还能用作正向代理来进行上网等功能。 </p>
+<p>正向代理：如果把局域网外的 Internet 想象成一个巨大的资源库，则局域网中的客户端要访问 Internet，则需要通过代理服务器来访问，这种代理服务就称为正向代理。</p>
+<ul>
+<li>简单来说：通过代理服务器来访问服务器的过程 就叫正向代理。</li>
+<li>需要在客户端配置代理服务器进行指定网站访问</li>
+</ul>
+<p><img src="/../images/2021-10-30-nginx%E7%9F%A5%E8%AF%86%E7%82%B9/image-20211030220214346.png" alt="image-20211030220214346"></p>
+<h3 id="1-4-反向代理"><a href="#1-4-反向代理" class="headerlink" title="1.4 反向代理"></a>1.4 反向代理</h3><p>反向代理，其实客户端对代理是无感知的，因为客户端不需要任何配置就可以访问，我们只需要将请求发送到反向代理服务器，由反向代理服务器去选择目标服务器获取数据后，在返 回给客户端，此时反向代理服务器和目标服务器对外就是一个服务器，暴露的是代理服务器地址，隐藏了真实服务器 IP 地址。</p>
+<p><img src="/../images/2021-10-30-nginx%E7%9F%A5%E8%AF%86%E7%82%B9/image-20211030220410539.png" alt="image-20211030220410539"></p>
+<h3 id="1-5-负载均衡"><a href="#1-5-负载均衡" class="headerlink" title="1.5 负载均衡"></a>1.5 负载均衡</h3><p>客户端发送多个请求到服务器，服务器处理请求，有一些可能要与数据库进行交互，服 务器处理完毕后，再将结果返回给客户端。</p>
+<p>这种架构模式对于早期的系统相对单一，并发请求相对较少的情况下是比较适合的，成 本也低。但是随着信息数量的不断增长，访问量和数据量的飞速增长，以及系统业务的复杂 度增加，这种架构会造成服务器相应客户端的请求日益缓慢，并发量特别大的时候，还容易 造成服务器直接崩溃。很明显这是由于服务器性能的瓶颈造成的问题，那么如何解决这种情况呢？</p>
+<p>我们首先想到的可能是升级服务器的配置，比如提高 CPU 执行频率，加大内存等提高机 器的物理性能来解决此问题，但是我们知道摩尔定律的日益失效，硬件的性能提升已经不能 满足日益提升的需求了。最明显的一个例子，天猫双十一当天，某个热销商品的瞬时访问量 是极其庞大的，那么类似上面的系统架构，将机器都增加到现有的顶级物理配置，都是不能 够满足需求的。那么怎么办呢？ 上面的分析我们去掉了增加服务器物理配置来解决问题的办法，也就是说纵向解决问题 的办法行不通了，那么横向增加服务器的数量呢？这时候集群的概念产生了，单个服务器解决不了，<strong>我们增加服务器的数量，然后将请求分发到各个服务器上，将原先请求集中到单个服务器上的情况改为将请求分发到多个服务器上，将负载分发到不同的服务器，也就是我们 所说的负载均衡。</strong></p>
+<p><img src="/../images/2021-10-30-nginx%E7%9F%A5%E8%AF%86%E7%82%B9/image-20211030221457994.png" alt="image-20211030221457994"></p>
+<h3 id="1-6-动静分离"><a href="#1-6-动静分离" class="headerlink" title="1.6 动静分离"></a>1.6 动静分离</h3><p>为了加快网站的解析速度，可以把动态页面和静态页面由不同的服务器来解析，加快解析速 度。降低原来单个服务器的压力。</p>
+<p><img src="/../images/2021-10-30-nginx%E7%9F%A5%E8%AF%86%E7%82%B9/image-20211030221949437.png" alt="image-20211030221949437"></p>
+<h2 id="2-Nginx-安装"><a href="#2-Nginx-安装" class="headerlink" title="2. Nginx 安装"></a>2. Nginx 安装</h2><h3 id="2-1-进入-nginx-官网，下载"><a href="#2-1-进入-nginx-官网，下载" class="headerlink" title="2.1 进入 nginx 官网，下载"></a>2.1 进入 nginx 官网，下载</h3><p>下载地址：<a href="http://nginx.org/en/download.html">http://nginx.org/en/download.html</a></p>
+<p>选择Linux版本</p>
+<p><img src="/../images/2021-10-30-nginx%E7%9F%A5%E8%AF%86%E7%82%B9/image-20211030225809892.png" alt="image-20211030225809892"></p>
+<h3 id="2-2-开始安装"><a href="#2-2-开始安装" class="headerlink" title="2.2 开始安装"></a>2.2 开始安装</h3><p>将文件传输到 <code>/usr/lcoal/software/</code>下</p>
+<p>依次执行以下命令</p>
+<pre class=" language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#进入安装路径</span>
+<span class="token function">cd</span> /usr/local/software/
+<span class="token comment" spellcheck="true">#解压</span>
+<span class="token function">tar</span> nginx-1.20.1.tar.gz
+<span class="token comment" spellcheck="true">#进入nginx</span>
+<span class="token function">cd</span> nginx-1.20.1/
+<span class="token comment" spellcheck="true">#安装</span>
+./configure
+<span class="token comment" spellcheck="true">#执行命令</span>
+<span class="token function">make</span>
+<span class="token function">make</span> <span class="token function">install</span>
+</code></pre>
+<h3 id="2-3-运行nginx"><a href="#2-3-运行nginx" class="headerlink" title="2.3 运行nginx"></a>2.3 运行nginx</h3><ul>
+<li><p>安装完nginx后，会在 路径 /usr/local 下自动生成 nginx 文件夹。这是自动生成的。</p>
+</li>
+<li><p>进入这个目录：</p>
+<pre class=" language-bash"><code class="language-bash"><span class="token function">cd</span> /usr/local/nginx
+</code></pre>
+</li>
+</ul>
+<p>目录内容：</p>
+<p><img src="/../images/2021-10-30-nginx%E7%9F%A5%E8%AF%86%E7%82%B9/image-20211030230835036.png" alt="image-20211030230835036"></p>
+<ul>
+<li>进入sbin文件夹</li>
+</ul>
+<p>nginx命令：</p>
+<pre class=" language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#启动nginx</span>
+./nginx
+<span class="token comment" spellcheck="true">#查询nginx</span>
+<span class="token function">ps</span> -ef <span class="token operator">|</span> <span class="token function">grep</span> nginx
+<span class="token comment" spellcheck="true">#关闭nginx</span>
+./nginx -s stop
+<span class="token comment" spellcheck="true">#重启nginx</span>
+./nginx -s reload
+</code></pre>
+<p>查看配置文件：</p>
+<pre class=" language-bahs"><code class="language-bahs">cd conf/
+
+#编辑nginx.conf
+vim nginx.conf
+</code></pre>
+<p><img src="/../images/2021-10-30-nginx%E7%9F%A5%E8%AF%86%E7%82%B9/image-20211030231524985.png" alt="image-20211030231524985"></p>
+<p>最后我们可以在浏览器输入：<code>47.113.221.56:80</code>查看是否成功</p>
+<p><img src="/../images/2021-10-30-nginx%E7%9F%A5%E8%AF%86%E7%82%B9/image-20211030231809594.png" alt="image-20211030231809594"></p>
+<h2 id="3-Nginx配置文件"><a href="#3-Nginx配置文件" class="headerlink" title="3.Nginx配置文件"></a>3.Nginx配置文件</h2><h3 id="3-1-nginx-的组成部分"><a href="#3-1-nginx-的组成部分" class="headerlink" title="3.1 nginx 的组成部分"></a>3.1 nginx 的组成部分</h3><p>配置文件中有很多#， 开头的表示注释内容，我们去掉所有以 # 开头的段落，精简之后的 内容如下：</p>
+<pre class=" language-conf"><code class="language-conf">worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+
+    server {
+        listen       80;
+        server_name  localhost;
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>nginx 配置文件有三部分组成</li>
+</ul>
+<h3 id="3-2-第一部分：全局块"><a href="#3-2-第一部分：全局块" class="headerlink" title="3.2 第一部分：全局块"></a>3.2 第一部分：全局块</h3><p>从配置文件开始到 events 块之间的内容，主要会设置一些影响nginx 服务器整体运行的配置指令，主要包括配 置运行 Nginx 服务器的用户（组）、允许生成的 worker process 数，进程 PID 存放路径、日志存放路径和类型以 及配置文件的引入等。<br>比如上面第一行配置的：</p>
+<pre class=" language-conf"><code class="language-conf">worker_processes  1;
+</code></pre>
+<p>这是 Nginx 服务器并发处理服务的关键配置，worker_processes 值越大，可以支持的并发处理量也越多，但是会受到硬件、软件等设备的制约。</p>
+<h3 id="3-3-第二部分：events块"><a href="#3-3-第二部分：events块" class="headerlink" title="3.3 第二部分：events块"></a>3.3 第二部分：events块</h3><pre class=" language-conf"><code class="language-conf">events {
+    worker_connections  1024;
+}
+</code></pre>
+<p>events 块涉及的指令主要影响 Nginx 服务器与用户的网络连接，常用的设置包括是否开启对多 work process 下的网络连接进行序列化，是否允许同时接收多个网络连接，选取哪种事件驱动模型来处理连接请求，每个 word process 可以同时支持的最大连接数等。</p>
+<ul>
+<li>上述例子就表示每个 work process 支持的最大连接数为 1024.</li>
+<li>这部分的配置对 Nginx 的性能影响较大，在实际中应该灵活配置。</li>
+</ul>
+<h3 id="3-4-第三部分：http-块"><a href="#3-4-第三部分：http-块" class="headerlink" title="3.4 第三部分：http 块"></a>3.4 第三部分：http 块</h3><pre class=" language-conf"><code class="language-conf">http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+
+    server {
+        listen       80;
+        server_name  localhost;
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}
+</code></pre>
+<p> 这是 Nginx 服务器配置中最频繁的部分，代理、缓存和日志定义等绝大多数功能和第三方模块的配置都在这里。</p>
+<p>需要注意的是：http 块也可以包括 http 全局块、server 块。</p>
+<h4 id="3-4-1-http-全局块"><a href="#3-4-1-http-全局块" class="headerlink" title="3.4.1 http 全局块"></a>3.4.1 http 全局块</h4><p>http 全局块配置的指令包括文件引入、MIME-TYPE 定义、日志自定义、连接超时时间、单链接请求数上限等。</p>
+<h4 id="3-4-2-server-块"><a href="#3-4-2-server-块" class="headerlink" title="3.4.2 server 块"></a>3.4.2 server 块</h4><p>这块和虚拟主机有密切关系，虚拟主机从用户角度看，和一台独立的硬件主机是完全一样的，该技术的产生是为了 节省互联网服务器硬件成本。</p>
+<ul>
+<li>每个 http 块可以包括多个 server 块，而每个 server 块就相当于一个虚拟主机。</li>
+<li>而每个 server 块也分为全局 server 块，以及可以同时包含多个 locaton 块。</li>
+</ul>
+<blockquote>
+<p>1、全局 server 块</p>
+</blockquote>
+<p>最常见的配置是本虚拟机主机的监听配置和本虚拟主机的名称或 IP 配置。</p>
+<blockquote>
+<p>2、location 块</p>
+</blockquote>
+<p>一个 server 块可以配置多个 location 块。</p>
+<p>这块的主要作用是基于 Nginx 服务器接收到的请求字符串（例如 server_name/uri-string），对虚拟主机名称 （也可以是 IP 别名）之外的字符串（例如 前面的 /uri-string）进行匹配，对特定的请求进行处理。地址定向、数据缓 存和应答控制等功能，还有许多第三方模块的配置也在这里进行。</p>
+</body></html>]]></content>
+  </entry>
 </search>
