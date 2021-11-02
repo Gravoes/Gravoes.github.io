@@ -4795,8 +4795,9 @@ http://www.springframework.org/schema/context/spring-context.xsd<span class="tok
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>build</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>project</span><span class="token punctuation">></span></span>
 </code></pre>
-<h2 id="3-编码构建"><a href="#3-编码构建" class="headerlink" title="3.编码构建"></a>3.编码构建</h2><h3 id="3-1-cloud-provider-payment8001"><a href="#3-1-cloud-provider-payment8001" class="headerlink" title="3.1 cloud-provider-payment8001"></a>3.1 cloud-provider-payment8001</h3><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101001354865.png" alt="image-20211101001354865"></p>
-<h4 id="3-1-1-配置搭建"><a href="#3-1-1-配置搭建" class="headerlink" title="3.1.1 配置搭建"></a>3.1.1 配置搭建</h4><ul>
+<h2 id="3-编码构建"><a href="#3-编码构建" class="headerlink" title="3.编码构建"></a>3.编码构建</h2><h3 id="3-1-cloud-provider-payment8001"><a href="#3-1-cloud-provider-payment8001" class="headerlink" title="3.1 cloud-provider-payment8001"></a>3.1 cloud-provider-payment8001</h3><p><strong>微服务提供者</strong></p>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101001354865.png" alt="image-20211101001354865"></p>
+<h4 id="3-1-1-pom、yml、启动类"><a href="#3-1-1-pom、yml、启动类" class="headerlink" title="3.1.1  pom、yml、启动类"></a>3.1.1  pom、yml、启动类</h4><ul>
 <li><p>创建子模块<code>moudle</code>的maven工程</p>
 </li>
 <li><p>pom文件</p>
@@ -4946,17 +4947,568 @@ mybatis:
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
+</li>
+</ol>
 <h4 id="3-1-3-测试"><a href="#3-1-3-测试" class="headerlink" title="3.1.3 测试"></a>3.1.3 测试</h4><ul>
 <li><p>Get测试</p>
 <p><a href="http://localhost:8001/payment/get/31">http://localhost:8001/payment/get/31</a></p>
 </li>
 <li><p>Post测试</p>
 <p>通过postman测试insert请求，或者通过idea自带的httpClient插件测试Post请求</p>
-<p><a href="http://localhost:8001/payment/insert?=Jaqen">http://localhost:8001/payment/insert?=Jaqen</a></p>
+<p><a href="http://localhost:8001/payment/insert?serial=Jaqen">http://localhost:8001/payment/insert?serial=Jaqen</a></p>
 </li>
 </ul>
+<h3 id="3-2-cloud-consumer-order81"><a href="#3-2-cloud-consumer-order81" class="headerlink" title="3.2 cloud-consumer-order81"></a>3.2 cloud-consumer-order81</h3><p><strong>微服务消费者</strong></p>
+<h4 id="3-2-1-pom、yml、启动类"><a href="#3-2-1-pom、yml、启动类" class="headerlink" title="3.2.1 pom、yml、启动类"></a>3.2.1 pom、yml、启动类</h4><ul>
+<li><p>pom</p>
+<pre class=" language-xml"><code class="language-xml"> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependencies</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!--eureka-client--></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.cloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-cloud-starter-netflix-eureka-client<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span><span class="token comment" spellcheck="true">&lt;!-- 引入自己定义的api通用包，可以使用Payment支付Entity --></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.star.springcloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>cloud-api-commons<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>${project.version}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-web<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-actuator<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-devtools<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">></span></span>runtime<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>optional</span><span class="token punctuation">></span></span>true<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>optional</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.projectlombok<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>lombok<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>optional</span><span class="token punctuation">></span></span>true<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>optional</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">></span></span>test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependencies</span><span class="token punctuation">></span></span>
+</code></pre>
+</li>
+<li><p>yml</p>
+<pre class=" language-yml"><code class="language-yml">server:
+  port: 81
+spring:
+  application:
+    name: cloud-order-service
+eureka:
+  client:
+    #表示是否将自己注册进EurekaServer默认为true。
+    register-with-eureka: true
+    #是否从EurekaServer抓取已有的注册信息，默认为true。单节点无所谓，集群必须设置为true才能配合ribbon使用负载均衡
+    fetchRegistry: true
+    service-url:
+      #defaultZone: http://localhost:7001/eureka
+      defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka  # 集群版
+</code></pre>
+</li>
+<li><p>启动类</p>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@EnableEurekaClient</span>
+<span class="token annotation punctuation">@SpringBootApplication</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">OrderMain81</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        SpringApplication<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>OrderMain81<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</li>
+</ul>
+<h4 id="3-2-2-业务类"><a href="#3-2-2-业务类" class="headerlink" title="3.2.2 业务类"></a>3.2.2 业务类</h4><ol>
+<li><p>entity</p>
+<ul>
+<li>主实体:<code>class:Payment</code></li>
+<li>Json封装体:<code>class:CommonResult</code></li>
+</ul>
+</li>
+<li><p>config</p>
+<ul>
+<li>配置类:<code>class:applicationContextConfig</code></li>
+</ul>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ApplicationContextConfig</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token annotation punctuation">@LoadBalanced</span> <span class="token comment" spellcheck="true">//使用@LoadBalanced注解赋予RestTemplate负载均衡的能力</span>
+    <span class="token keyword">public</span> RestTemplate <span class="token function">getRestTemplate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">RestTemplate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<ul>
+<li>什么是<code>Restemplate</code>?</li>
+</ul>
+<p>RestTemplate提供了多种便捷访问远程Http服务的方法，<br>是一种简单便捷的访问restful服务模板类，是Spring提供的用于访问Rest服务的客户端模板工具集.</p>
+<ul>
+<li>使用</li>
+</ul>
+<p>使用restTemplate访问restful接口非常的简单粗暴无脑。<br>(url, requestMap, ResponseBean.class)这三个参数分别代表<br>REST请求地址、请求参数、HTTP响应转换被转换成的对象类型</p>
+</li>
+<li><p>controller</p>
 </li>
 </ol>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RestController</span>
+<span class="token annotation punctuation">@Slf4j</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">OrderController</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//public static final String PAYMENT_URL = "http://localhost:8001";</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> String PAYMENT_URL <span class="token operator">=</span> <span class="token string">"http://CLOUD-PAYMENT-SERVICE"</span><span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Resource</span>
+    RestTemplate restTemplate<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/consumer/payment/insert"</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//客户端用浏览器是get请求，但是底层实质发送post调用服务端8001</span>
+    <span class="token keyword">public</span> CommonResult <span class="token function">insert</span><span class="token punctuation">(</span>Payment payment<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> restTemplate<span class="token punctuation">.</span><span class="token function">postForObject</span><span class="token punctuation">(</span>PAYMENT_URL <span class="token operator">+</span> <span class="token string">"/payment/insert"</span><span class="token punctuation">,</span> payment<span class="token punctuation">,</span> CommonResult<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">//http://localhost:81/consumer/payment/get/30</span>
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/consumer/payment/get/{id}"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> CommonResult <span class="token function">getPayment</span><span class="token punctuation">(</span><span class="token annotation punctuation">@PathVariable</span><span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">)</span> Long id<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> restTemplate<span class="token punctuation">.</span><span class="token function">getForObject</span><span class="token punctuation">(</span>PAYMENT_URL <span class="token operator">+</span> <span class="token string">"/payment/get/"</span> <span class="token operator">+</span> id<span class="token punctuation">,</span> CommonResult<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="3-2-3-测试"><a href="#3-2-3-测试" class="headerlink" title="3.2.3 测试"></a>3.2.3 测试</h4><ul>
+<li><p>Get测试</p>
+<p><a href="http://localhost:81/consumer/payment/get/31">http://localhost:81/consumer/payment/get/31</a></p>
+</li>
+<li><p>Post测试</p>
+<p><a href="http://localhost:801/consumer/payment/insert?serial=Jaqen">http://localhost:801/consumer/payment/insert?serial=Jaqen</a></p>
+</li>
+</ul>
+<h3 id="3-3-代码重构"><a href="#3-3-代码重构" class="headerlink" title="3.3 代码重构"></a>3.3 代码重构</h3><p>在各个模块中有重复使用的部分，可以抽取出来单独成为一个moudle，例如<code>entity</code></p>
+<ol>
+<li><p>新建<code>cloud-api-commons</code>模块</p>
+</li>
+<li><p>pom</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependencies</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-devtools<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">></span></span>runtime<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>optional</span><span class="token punctuation">></span></span>true<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>optional</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.projectlombok<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>lombok<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>optional</span><span class="token punctuation">></span></span>true<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>optional</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>cn.hutool<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>hutool-all<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>5.1.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependencies</span><span class="token punctuation">></span></span>
+</code></pre>
+</li>
+<li><p>抽取<code>entity</code></p>
+</li>
+<li><p>maven命令clean &amp; install</p>
+</li>
+<li><p>其他模块添加自定义的依赖</p>
+<pre class=" language-xml"><code class="language-xml"> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span><span class="token comment" spellcheck="true">&lt;!-- 引入自己定义的api通用包，可以使用Payment支付Entity --></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.star.springcloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>cloud-api-commons<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>${project.version}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+</code></pre>
+</li>
+</ol>
+<h2 id="4-Eureka服务注册与发现"><a href="#4-Eureka服务注册与发现" class="headerlink" title="4.Eureka服务注册与发现"></a>4.Eureka服务注册与发现</h2><h3 id="4-1-Eureka基础知识"><a href="#4-1-Eureka基础知识" class="headerlink" title="4.1 Eureka基础知识"></a>4.1 Eureka基础知识</h3><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101213000074.png" alt="image-20211101213000074"></p>
+<h4 id="4-1-1-什么是服务治理"><a href="#4-1-1-什么是服务治理" class="headerlink" title="4.1.1 什么是服务治理"></a>4.1.1 什么是服务治理</h4><p>Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务治理</p>
+<p> 在传统的rpc远程调用框架中，管理每个服务与服务之间依赖关系比较复杂，管理比较复杂，所以需要使用服务治理，管理服务于服务之间依赖关系，可以实现服务调用、负载均衡、容错等，实现服务发现与注册。</p>
+<h4 id="4-1-2-什么是服务注册"><a href="#4-1-2-什么是服务注册" class="headerlink" title="4.1.2 什么是服务注册"></a>4.1.2 什么是服务注册</h4><p>Eureka采用了CS的设计架构，Eureka Server 作为服务注册功能的服务器，它是服务注册中心。而系统中的其他微服务，使用 Eureka的客户端连接到 Eureka Server并维持心跳连接。这样系统的维护人员就可以通过 Eureka Server 来监控系统中各个微服务是否正常运行。</p>
+<p>在服务注册与发现中，有一个注册中心。当服务器启动的时候，会把当前自己服务器的信息 比如 服务地址通讯地址等以别名方式注册到注册中心上。另一方（消费者|服务提供者），以该别名的方式去注册中心上获取到实际的服务通讯地址，然后再实现本地RPC调用RPC远程调用框架核心设计思想：在于注册中心，因为使用注册中心管理每个服务与服务之间的一个依赖关系(服务治理概念)。在任何rpc远程框架中，都会有一个注册中心(存放服务地址相关信息(接口地址))</p>
+<h4 id="4-1-3-Eureka两组件"><a href="#4-1-3-Eureka两组件" class="headerlink" title="4.1.3 Eureka两组件"></a>4.1.3 Eureka两组件</h4><p>Eureka包含两个组件：<code>Eureka Server</code>和<code>Eureka Client</code></p>
+<ul>
+<li><p><strong>Eureka Server提供服务注册服务</strong><br>各个微服务节点通过配置启动后，会在EurekaServer中进行注册，这样EurekaServer中的服务注册表中将会存储所有可用服务节点的信息，服务节点的信息可以在界面中直观看到。</p>
+</li>
+<li><p><strong>EurekaClient通过注册中心进行访问</strong><br>是一个Java客户端，用于简化Eureka Server的交互，客户端同时也具备一个内置的、使用轮询(round-robin)负载算法的负载均衡器。在应用启动后，将会向Eureka Server发送心跳(默认周期为30秒)。如果Eureka Server在多个心跳周期内没有接收到某个节点的心跳，EurekaServer将会从服务注册表中把这个服务节点移除（默认90秒）</p>
+</li>
+</ul>
+<h3 id="4-2-单机Eureka构建"><a href="#4-2-单机Eureka构建" class="headerlink" title="4.2 单机Eureka构建"></a>4.2 单机Eureka构建</h3><h4 id="4-2-1-cloud-eureka-server7001"><a href="#4-2-1-cloud-eureka-server7001" class="headerlink" title="4.2.1 cloud-eureka-server7001"></a>4.2.1 cloud-eureka-server7001</h4><p>注册中心</p>
+<ol>
+<li><p>pom</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependencies</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!--eureka-server--></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.cloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-cloud-starter-netflix-eureka-server<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!-- 引入自己定义的api通用包，可以使用Payment支付Entity --></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.star.springcloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>cloud-api-commons<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>${project.version}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!--boot web actuator--></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-web<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-actuator<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!--一般通用配置--></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-devtools<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">></span></span>runtime<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>optional</span><span class="token punctuation">></span></span>true<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>optional</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.projectlombok<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>lombok<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">></span></span>test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>junit<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>junit<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependencies</span><span class="token punctuation">></span></span>
+</code></pre>
+</li>
+<li><p>yml</p>
+<pre class=" language-yml"><code class="language-yml">server:
+  port: 7001
+
+eureka:
+  instance:
+    hostname: localhost #eureka服务端的实例名称
+  client:
+    #false表示不向注册中心注册自己。
+    register-with-eureka: false
+    #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+    fetch-registry: false
+    service-url:
+    #设置与Eureka Server交互的地址查询服务和注册服务都需要依赖这个地址。
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+</code></pre>
+</li>
+<li><p>主启动</p>
+<p>额外添加<code>@EnableEurekaServer</code></p>
+</li>
+<li><p>测试</p>
+<p><a href="http://localhost:7001/">http://localhost:7001/</a></p>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101213819483.png" alt="image-20211101213819483"></p>
+</li>
+</ol>
+<h4 id="4-2-2-cloud-provider-payment8001"><a href="#4-2-2-cloud-provider-payment8001" class="headerlink" title="4.2.2 cloud-provider-payment8001"></a>4.2.2 cloud-provider-payment8001</h4><ol>
+<li><p>pom</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependencies</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!--eureka-client--></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.cloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-cloud-starter-netflix-eureka-client<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span><span class="token comment" spellcheck="true">&lt;!-- 引入自己定义的api通用包，可以使用Payment支付Entity --></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.star.springcloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>cloud-api-commons<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>${project.version}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-web<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-actuator<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.mybatis.spring.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>mybatis-spring-boot-starter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.alibaba<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>druid-spring-boot-starter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>1.1.10<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!--mysql-connector-java--></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>mysql<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>mysql-connector-java<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!--jdbc--></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-jdbc<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-devtools<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">></span></span>runtime<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>optional</span><span class="token punctuation">></span></span>true<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>optional</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.projectlombok<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>lombok<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>optional</span><span class="token punctuation">></span></span>true<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>optional</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">></span></span>test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependencies</span><span class="token punctuation">></span></span>
+</code></pre>
+</li>
+<li><p>yml</p>
+<pre class=" language-yml"><code class="language-yml">server:
+  port: 8001
+spring:
+  application:
+    name: cloud-payment-service
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource            # 当前数据源操作类型
+    driver-class-name: com.mysql.cj.jdbc.Driver             # mysql驱动包 org.gjt.mm.mysql.Driver
+    url: jdbc:mysql://localhost:3306/db2019?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password: jaqen
+eureka:
+  client:
+    #表示是否将自己注册进EurekaServer默认为true。
+    register-with-eureka: true
+    #是否从EurekaServer抓取已有的注册信息，默认为true。单节点无所谓，集群必须设置为true才能配合ribbon使用负载均衡
+    fetchRegistry: true
+    service-url:
+      #defaultZone: http://localhost:7001/eureka
+      defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka  # 集群版
+
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  type-aliases-package: com.atguigu.springcloud.entities    # 所有Entity别名类所在包
+</code></pre>
+</li>
+<li><p>主启动类 <code>@EnableEurekaCient</code></p>
+</li>
+<li><p>测试</p>
+<p>1.启动EurekaServer–&gt;2.<a href="http://localhost7001/">http://localhost7001/</a></p>
+</li>
+<li><p>自我保护机制</p>
+</li>
+</ol>
+<h4 id="4-2-3-cloud-consumer-order81"><a href="#4-2-3-cloud-consumer-order81" class="headerlink" title="4.2.3 cloud-consumer-order81"></a>4.2.3 cloud-consumer-order81</h4><p><strong>消费者</strong></p>
+<ol>
+<li><p>pom</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.cloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-cloud-starter-netflix-eureka-client<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+</code></pre>
+</li>
+<li><p>yml</p>
+<pre class=" language-yml"><code class="language-yml">server:
+  port: 80
+
+spring:
+    application:
+        name: cloud-order-service
+
+eureka:
+  client:
+    #表示是否将自己注册进EurekaServer默认为true。
+    register-with-eureka: true
+    #是否从EurekaServer抓取已有的注册信息，默认为true。单节点无所谓，集群必须设置为true才能配合ribbon使用负载均衡
+    fetchRegistry: true
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+</code></pre>
+</li>
+<li><p>主启动 <code>@EnableEurekaClient</code></p>
+</li>
+<li><p>测试</p>
+<p>Server7001 -&gt; provider8001 -&gt; <a href="http://localhost:81/consumer/payment/get/31">http://localhost:81/consumer/payment/get/31</a></p>
+</li>
+</ol>
+<h3 id="4-3-集群Eureka构建"><a href="#4-3-集群Eureka构建" class="headerlink" title="4.3 集群Eureka构建"></a>4.3 集群Eureka构建</h3><h4 id="4-3-1-原理"><a href="#4-3-1-原理" class="headerlink" title="4.3.1 原理"></a>4.3.1 原理</h4><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101215114958.png" alt="image-20211101215114958"></p>
+<p>问题：微服务RPC远程服务调用最核心的是什么 ?</p>
+<p>高可用，试想你的注册中心只有一个only one， 它出故障了那就呵呵(￣▽￣)”了，会导致整个为服务环境不可用.</p>
+<p>　　解决办法：搭建Eureka注册中心集群 ，实现负载均衡+故障容错</p>
+<h4 id="4-3-2-搭建步骤7001-7002"><a href="#4-3-2-搭建步骤7001-7002" class="headerlink" title="4.3.2 搭建步骤7001/7002"></a>4.3.2 搭建步骤7001/7002</h4><ol>
+<li><p>参考cloud-eureka-server7001 新建 cloud-eureka-server7002</p>
+</li>
+<li><p>修改映射配置，找到C:\Windows\System32\drivers\etc路径下的hosts文件</p>
+<p>添加127.0.0.1 eureka7001.com</p>
+<p>​          127.0.0.1 eureka7002.com</p>
+</li>
+<li><p>修改yml (互相引用)</p>
+<p>7001</p>
+<pre class=" language-yml"><code class="language-yml">server:
+  port: 7001
+
+eureka:
+  instance:
+    hostname: eureka7001.com #eureka服务端的实例名称
+  client:
+    register-with-eureka: false     #false表示不向注册中心注册自己。
+    fetch-registry: false     #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+    service-url:
+      defaultZone: http://eureka7002.com:7002/eureka/
+</code></pre>
+<p>7002</p>
+<pre class=" language-yml"><code class="language-yml">server:
+  port: 7002
+  
+eureka:
+  instance:
+    hostname: eureka7002.com #eureka服务端的实例名称
+  client:
+    register-with-eureka: false     #false表示不向注册中心注册自己。
+    fetch-registry: false     #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka/
+</code></pre>
+</li>
+<li><p>主启动<code>@EnableEurekaServer</code></p>
+</li>
+</ol>
+<h4 id="4-3-3-将8001注册"><a href="#4-3-3-将8001注册" class="headerlink" title="4.3.3 将8001注册"></a>4.3.3 将8001注册</h4><p>修改pom</p>
+<pre class=" language-yml"><code class="language-yml">#替换掉原来的单机版
+      defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka  # 集群版
+</code></pre>
+<h4 id="4-3-4-将80注册"><a href="#4-3-4-将80注册" class="headerlink" title="4.3.4 将80注册"></a>4.3.4 将80注册</h4><p>修改pom</p>
+<pre class=" language-yml"><code class="language-yml">#替换掉原来的单机版
+        defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka  # 集群版
+</code></pre>
+<h4 id="4-3-5-测试"><a href="#4-3-5-测试" class="headerlink" title="4.3.5 测试"></a>4.3.5 测试</h4><ol>
+<li>先要启动EurekaServer，7001/7002服务</li>
+<li>再要启动服务提供者provider，8001</li>
+<li>再要启动消费者，80</li>
+<li><a href="http://localhost/consumer/payment/get/31">http://localhost/consumer/payment/get/31</a></li>
+</ol>
+<h4 id="4-3-6-支付提供者集群8002"><a href="#4-3-6-支付提供者集群8002" class="headerlink" title="4.3.6 支付提供者集群8002"></a>4.3.6 支付提供者集群8002</h4><p>修改8001/8002的Controller</p>
+<pre class=" language-java"><code class="language-java">   <span class="token comment" spellcheck="true">//获取application中端口数据</span>
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"${server.port}"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> String serverPort<span class="token punctuation">;</span>
+</code></pre>
+<h4 id="4-3-7-负载均衡"><a href="#4-3-7-负载均衡" class="headerlink" title="4.3.7 负载均衡"></a>4.3.7 负载均衡</h4><ul>
+<li>订单访问地址不能写死</li>
+</ul>
+<pre class=" language-java"><code class="language-java"> 
+<span class="token comment" spellcheck="true">//public static final String PAYMENT_SRV = "http://localhost:8001";</span>
+ 
+<span class="token comment" spellcheck="true">// 通过在eureka上注册过的微服务名称调用</span>
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> String PAYMENT_SRV <span class="token operator">=</span> <span class="token string">"http://CLOUD-PAYMENT-SERVICE"</span><span class="token punctuation">;</span>
+</code></pre>
+<ul>
+<li>使用@LoadBalanced注解赋予RestTemplate负载均衡的能力</li>
+</ul>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ApplicationContextBean</span>
+<span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token annotation punctuation">@LoadBalanced</span> <span class="token comment" spellcheck="true">//使用@LoadBalanced注解赋予RestTemplate负载均衡的能力</span>
+    <span class="token keyword">public</span> RestTemplate <span class="token function">getRestTemplate</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">RestTemplate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>负载均衡效果达到,8001/8002端口交替出现</p>
+<h4 id="4-3-8-Eureka自我保护"><a href="#4-3-8-Eureka自我保护" class="headerlink" title="4.3.8 Eureka自我保护"></a>4.3.8 Eureka自我保护</h4><blockquote>
+<p>故障</p>
+</blockquote>
+<p>保护模式主要用于一组客户端和Eureka Server之间存在网络分区场景下的保护。一旦进入保护模式，<br>Eureka Server将会尝试保护其服务注册表中的信息，不再删除服务注册表中的数据，也就是不会注销任何微服务。</p>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101221037399.png" alt="image-20211101221037399"></p>
+<blockquote>
+<p>原因</p>
+</blockquote>
+<p>一句话：某时刻某一个微服务不可用了，Eureka不会立刻清理，依旧会对该微服务的信息进行保存</p>
+<blockquote>
+<p>怎么禁止自我保护</p>
+</blockquote>
+<ul>
+<li>注册中心eureakeServer端7001</li>
+</ul>
+<p>使用<code>eureka.server.enable-self-preservation = false</code> 可以禁用自我保护模式</p>
+<ul>
+<li>生产者客户端eurekaClient端8001</li>
+</ul>
+<pre class=" language-yml"><code class="language-yml">#心跳检测与续约时间
+#开发时设置小些，保证服务关闭后注册中心能即使剔除服务
+  instance:
+  #Eureka客户端向服务端发送心跳的时间间隔，单位为秒(默认是30秒)
+    lease-renewal-interval-in-seconds: 1
+  #Eureka服务端在收到最后一次心跳后等待时间上限，单位为秒(默认是90秒)，超时将剔除服务
+    lease-expiration-duration-in-seconds: 2
+ 
+</code></pre>
+<h2 id="5-Zookeeper服务注册与发现"><a href="#5-Zookeeper服务注册与发现" class="headerlink" title="5.Zookeeper服务注册与发现"></a>5.Zookeeper服务注册与发现</h2><h3 id="5-1-Zookeeper概念"><a href="#5-1-Zookeeper概念" class="headerlink" title="5.1 Zookeeper概念"></a>5.1 Zookeeper概念</h3><p>它是一个分布式服务框架，是Apache Hadoop 的一个子项目，它主要是用来解决分布式应用中经常遇到的一些数据管理问题，如：统一命名服务、状态同步服务、集群管理、分布式应用配置项的管理等。</p>
+<h3 id="5-2-zk安装"><a href="#5-2-zk安装" class="headerlink" title="5.2 zk安装"></a>5.2 zk安装</h3><p>下载zk到linux的<code>/usr/local/software/</code></p>
+<p>解压<code>tar -zxvf zookeeper-3.6.3.tar.gz</code>后进入到<code>conf</code>目录</p>
+<p>拷贝<code>cp zoo_simple.cfg zoo.cfg</code>,进入到<code>cd bin/</code>目录下</p>
+<pre class=" language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#启动</span>
+./zkServer.sh start
+<span class="token comment" spellcheck="true">#停止</span>
+./zkServer.sh stop
+<span class="token comment" spellcheck="true">#重启</span>
+./zkServer.sh reload
+<span class="token comment" spellcheck="true">#查看</span>
+./zkServer.sh status
+
+<span class="token comment" spellcheck="true">#联通</span>
+./zkCli.sh -server 127.0.0.1:2181
+<span class="token comment" spellcheck="true">#查看实例</span>
+<span class="token function">ls</span> /services
+</code></pre>
+<h3 id="5-3-流程图"><a href="#5-3-流程图" class="headerlink" title="5.3 流程图"></a>5.3 流程图</h3><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101222233077.png" alt="image-20211101222233077"></p>
+<h2 id="6-Consul服务注册与发现"><a href="#6-Consul服务注册与发现" class="headerlink" title="6.Consul服务注册与发现"></a>6.Consul服务注册与发现</h2><h3 id="6-1-Consul概念"><a href="#6-1-Consul概念" class="headerlink" title="6.1 Consul概念"></a>6.1 Consul概念</h3><blockquote>
+<p>是什么</p>
+</blockquote>
+<p>Consul 是一套开源的分布式服务发现和配置管理系统，由 HashiCorp 公司用 Go 语言开发。</p>
+<p>提供了微服务系统中的服务治理、配置中心、控制总线等功能。这些功能中的每一个都可以根据需要单独使用，也可以一起使用以构建全方位的服务网格，总之Consul提供了一种完整的服务网格解决方案。</p>
+<p>它具有很多优点。包括： 基于 raft 协议，比较简洁； 支持健康检查, 同时支持 HTTP 和 DNS 协议 支持跨数据中心的 WAN 集群 提供图形界面 跨平台，支持 Linux、Mac、Windows</p>
+<blockquote>
+<p>能干嘛</p>
+</blockquote>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101223225099.png" alt="image-20211101223225099"></p>
+<h3 id="6-2-下载和安装"><a href="#6-2-下载和安装" class="headerlink" title="6.2 下载和安装"></a>6.2 下载和安装</h3><blockquote>
+<p>WindowsX64</p>
+</blockquote>
+<p>在下载目录通过cmd启动</p>
+<p>查看版本</p>
+<pre class=" language-bash"><code class="language-bash">consul --version
+</code></pre>
+<p>执行</p>
+<pre class=" language-bash"><code class="language-bash">consul agent -dev
+</code></pre>
+<p>通过以下地址可以访问Consul的首页：<a href="http://localhost:8500/">http://localhost:8500</a></p>
+<blockquote>
+<p>结果</p>
+</blockquote>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101223518905.png" alt="image-20211101223518905"></p>
+<h3 id="6-3流程图"><a href="#6-3流程图" class="headerlink" title="6.3流程图"></a>6.3流程图</h3><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101223551145.png" alt="image-20211101223551145"></p>
+<h2 id="7-三个注册中心异同点"><a href="#7-三个注册中心异同点" class="headerlink" title="7.三个注册中心异同点"></a>7.三个注册中心异同点</h2><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101223646833.png" alt="image-20211101223646833"></p>
+<h3 id="7-1-CAP"><a href="#7-1-CAP" class="headerlink" title="7.1 CAP"></a>7.1 CAP</h3><ul>
+<li>C:Consistency（强一致性）</li>
+<li>A:Availability（可用性）</li>
+<li>P:Partition tolerance（分区容错性）</li>
+</ul>
+<p>CAP理论关注粒度是数据，而不是整体系统设计的策略</p>
+<h3 id="7-2-经典CAP图"><a href="#7-2-经典CAP图" class="headerlink" title="7.2 经典CAP图"></a>7.2 经典CAP图</h3><p><strong>最多只能同时较好的满足两个。</strong><br> CAP理论的核心是：<strong>一个分布式系统不可能同时很好的满足一致性，可用性和分区容错性这三个需求，</strong><br>因此，根据 CAP 原理将 NoSQL 数据库分成了满足 CA 原则、满足 CP 原则和满足 AP 原则三 大类：<br>CA - 单点集群，满足一致性，可用性的系统，通常在可扩展性上不太强大。<br>CP - 满足一致性，分区容错性的系统，通常性能不是特别高。<br>AP - 满足可用性，分区容错性的系统，通常可能对一致性要求低一些。</p>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211101224204456.png" alt="image-20211101224204456"></p>
+<h3 id="7-3-AP-Eureka"><a href="#7-3-AP-Eureka" class="headerlink" title="7.3 AP(Eureka)"></a>7.3 AP(Eureka)</h3><p><strong>AP架构</strong><br>当网络分区出现后，为了保证可用性，系统B可以返回旧值，保证系统的可用性。<br>结论：违背了一致性C的要求，只满足可用性和分区容错，即AP</p>
+<img src="../images/2021-10-31-springcloud学习笔记/image-20211101224302664.png" alt="image-20211101224302664" style="zoom: 80%;">
+
+<h3 id="7-4-CP-Zookeeper-Consul"><a href="#7-4-CP-Zookeeper-Consul" class="headerlink" title="7.4 CP(Zookeeper/Consul)"></a>7.4 CP(Zookeeper/Consul)</h3><p><strong>CP架构</strong><br>当网络分区出现后，为了保证一致性，就必须拒接请求，否则无法保证一致性<br>结论：违背了可用性A的要求，只满足一致性和分区容错，即CP</p>
+<img src="../images/2021-10-31-springcloud学习笔记/image-20211101224406506.png" alt="image-20211101224406506" style="zoom:80%;">
 </body></html>]]></content>
       <categories>
         <category>微服务</category>
