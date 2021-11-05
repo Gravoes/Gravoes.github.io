@@ -4649,13 +4649,9 @@ http://www.springframework.org/schema/context/spring-context.xsd<span class="tok
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2021/10/31/index/</url>
-    <content><![CDATA[<html><head></head><body><p>title: springcloud学习笔记<br>date: 2021-10-31 21:46:06<br>urlname: springcloud学习笔记<br>tags: springcloud<br>categories: 微服务<br>img:    </p>
-<ul>
-<li>/medias/cover/springcloud.jpg</li>
-</ul>
-<h1 id="SpringCloud"><a href="#SpringCloud" class="headerlink" title="SpringCloud"></a>SpringCloud</h1><h2 id="1-初识springcloud"><a href="#1-初识springcloud" class="headerlink" title="1.初识springcloud"></a>1.初识springcloud</h2><h3 id="1-1-springcloud介绍"><a href="#1-1-springcloud介绍" class="headerlink" title="1.1 springcloud介绍"></a>1.1 springcloud介绍</h3><p>spring cloud 是一系列框架的集合。它利用 spring boot 的开发便利性巧妙地简化了分布式系统基础设施的开发，如<strong>服务发现注册、配置中心、消息总线、负载均衡、断路器、数据监控</strong>等，都可以用 spring boot 的开发风格做到一键启动和部署。spring cloud 并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过 spring boot 风格进行再封装屏蔽掉了复杂的配置和实现原理，最终给开发者留出了一套简单易懂、易部署和易维护的分布式系统开发工具包。</p>
+    <title>springcloud学习笔记</title>
+    <url>/2021/10/31/springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<html><head></head><body><h1 id="SpringCloud"><a href="#SpringCloud" class="headerlink" title="SpringCloud"></a>SpringCloud</h1><h2 id="1-初识springcloud"><a href="#1-初识springcloud" class="headerlink" title="1.初识springcloud"></a>1.初识springcloud</h2><h3 id="1-1-springcloud介绍"><a href="#1-1-springcloud介绍" class="headerlink" title="1.1 springcloud介绍"></a>1.1 springcloud介绍</h3><p>spring cloud 是一系列框架的集合。它利用 spring boot 的开发便利性巧妙地简化了分布式系统基础设施的开发，如<strong>服务发现注册、配置中心、消息总线、负载均衡、断路器、数据监控</strong>等，都可以用 spring boot 的开发风格做到一键启动和部署。spring cloud 并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过 spring boot 风格进行再封装屏蔽掉了复杂的配置和实现原理，最终给开发者留出了一套简单易懂、易部署和易维护的分布式系统开发工具包。</p>
 <h3 id="1-2-springcloud技术组成"><a href="#1-2-springcloud技术组成" class="headerlink" title="1.2 springcloud技术组成"></a>1.2 springcloud技术组成</h3><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211031224906577.png" alt="image-20211031224906577"></p>
 <h3 id="springcloud组件更替"><a href="#springcloud组件更替" class="headerlink" title="springcloud组件更替"></a>springcloud组件更替</h3><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211031225232573.png" alt="image-20211031225232573"></p>
 <h2 id="2-springcloud环境搭建"><a href="#2-springcloud环境搭建" class="headerlink" title="2.springcloud环境搭建"></a>2.springcloud环境搭建</h2><h3 id="2-1-组件版本"><a href="#2-1-组件版本" class="headerlink" title="2.1 组件版本"></a>2.1 组件版本</h3><table>
@@ -6039,6 +6035,149 @@ eureka:
 </code></pre>
 <p>访问的时候必须加上<code>uname</code>参数，如：</p>
 <p><a href="http://localhost:9527/payment/lb?uname=XXX">http://localhost:9527/payment/lb?uname=XXX</a>    </p>
+<h2 id="13-SpringCloud-Config分布式配置中心"><a href="#13-SpringCloud-Config分布式配置中心" class="headerlink" title="13.SpringCloud Config分布式配置中心"></a>13.SpringCloud Config分布式配置中心</h2><h3 id="13-1-概述"><a href="#13-1-概述" class="headerlink" title="13.1 概述"></a>13.1 概述</h3><h4 id="13-1-1-分布式系统面临的—配置问题"><a href="#13-1-1-分布式系统面临的—配置问题" class="headerlink" title="13.1.1  分布式系统面临的—配置问题"></a>13.1.1  分布式系统面临的—配置问题</h4><p> 微服务意味着要将单体应用中的业务拆分成一个个子服务，每个服务的粒度相对较小，因此系统中会出现大量的服务。由于每个服务都需要必要的配置信息才能运行，所以一套集中式的、动态的配置管理设施是必不可少的。</p>
+<p>SpringCloud提供了ConfigServer来解决这个问题，我们每一个微服务自己带着一个application.yml，上百个配置文件的管理……</p>
+<h4 id="13-1-2-是什么"><a href="#13-1-2-是什么" class="headerlink" title="13.1.2 是什么"></a>13.1.2 是什么</h4><p>SpringCloud Config为微服务架构中的微服务提供集中化的外部配置支持，配置服务器为各个不同微服务应用的所有环境提供了一个中心化的外部配置。</p>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105214421743.png" alt="image-20211105214421743"></p>
+<p>SpringCloud Config分为<strong>服务端</strong>和<strong>客户端</strong>两部分。</p>
+<p>服务端也称为分布式配置中心，它是一个独立的微服务应用，用来连接配置服务器并为客户端提供获取配置信息，加密/解密信息等访问接口</p>
+<p>客户端则是通过指定的配置中心来管理应用资源，以及与业务相关的配置内容，并在启动的时候从配置中心获取和加载配置信息配置服务器默认采用git来存储配置信息，这样就有助于对环境配置进行版本管理，并且可以通过git客户端工具来方便的管理和访问配置内容。</p>
+<h4 id="13-1-3-能干嘛"><a href="#13-1-3-能干嘛" class="headerlink" title="13.1.3 能干嘛"></a>13.1.3 能干嘛</h4><ul>
+<li>集中管理配置文件</li>
+<li>不同环境不同配置，动态化的配置更新，分环境部署比如dev/test/prod/beta/release</li>
+<li>运行期间动态调整配置，不再需要在每个服务部署的机器上编写配置文件，服务会向配置中心统一拉取配置自己的信息</li>
+<li>当配置发生变动时，服务不需要重启即可感知到配置的变化并应用新的配置</li>
+<li>将配置信息以REST接口的形式暴露</li>
+</ul>
+<h4 id="13-1-4-与github整合"><a href="#13-1-4-与github整合" class="headerlink" title="13.1.4 与github整合"></a>13.1.4 与github整合</h4><p>由于SpringCloud Config默认使用Git来存储配置文件(也有其它方式,比如支持SVN和本地文件)，<br>但最推荐的还是Git，而且使用的是http/https访问的形式</p>
+<h3 id="13-2-Config服务端配置与测试"><a href="#13-2-Config服务端配置与测试" class="headerlink" title="13.2 Config服务端配置与测试"></a>13.2 Config服务端配置与测试</h3><h4 id="13-2-1-配置github"><a href="#13-2-1-配置github" class="headerlink" title="13.2.1 配置github"></a>13.2.1 配置github</h4><ol>
+<li><p>用你自己的账号在GitHub上新建一个名为springcloud-config的新Repository</p>
+</li>
+<li><p>获得配置的仓库地址</p>
+</li>
+<li><p>在D盘下建立本地仓库，并clone</p>
+</li>
+<li><pre class=" language-bash"><code class="language-bash"><span class="token function">git</span> add <span class="token keyword">.</span>
+
+<span class="token function">git</span> commit -m <span class="token string">"xxxx"</span>
+
+<span class="token function">git</span> push origin master
+</code></pre>
+</li>
+</ol>
+<h4 id="13-2-2-新建cloud-config-center-3344"><a href="#13-2-2-新建cloud-config-center-3344" class="headerlink" title="13.2.2 新建cloud-config-center-3344"></a>13.2.2 新建cloud-config-center-3344</h4><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105214827916.png" alt="image-20211105214827916"></p>
+<h4 id="13-2-3-配置读取规则"><a href="#13-2-3-配置读取规则" class="headerlink" title="13.2.3 配置读取规则"></a>13.2.3 配置读取规则</h4><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105214943979.png" alt="image-20211105214943979"></p>
+<h3 id="13-3-Config客户端配置与测试"><a href="#13-3-Config客户端配置与测试" class="headerlink" title="13.3 Config客户端配置与测试"></a>13.3 Config客户端配置与测试</h3><blockquote>
+<p>新建cloud-config-client-3355</p>
+</blockquote>
+<p>建立<code>bootstrap.yml</code></p>
+<p><strong>bootstrap.yml是什么?</strong></p>
+<p>applicaiton.yml是用户级的资源配置项<br>bootstrap.yml是系统级的，优先级更加高</p>
+<p>Spring Cloud会创建一个“Bootstrap Context”，作为Spring应用的<code>Application Context</code>的父上下文。初始化的时候，<code>Bootstrap Context</code>负责从外部源加载配置属性并解析配置。这两个上下文共享一个从外部获取的<code>Environment</code>。</p>
+<p><code>Bootstrap</code>属性有高优先级，默认情况下，它们不会被本地配置覆盖。 <code>Bootstrap context</code>和<code>Application Context</code>有着不同的约定，所以新增了一个<code>bootstrap.yml</code>文件，保证<code>Bootstrap Context</code>和<code>Application Context</code>配置的分离。</p>
+<p>要将Client模块下的application.yml文件改为bootstrap.yml,这是很关键的，<br>因为bootstrap.yml是比application.yml先加载的。bootstrap.yml优先级高于application.yml</p>
+<blockquote>
+<p>测试</p>
+</blockquote>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105215902239.png" alt="image-20211105215902239"></p>
+<h3 id="13-4-Config客户端之动态刷新"><a href="#13-4-Config客户端之动态刷新" class="headerlink" title="13.4 Config客户端之动态刷新"></a>13.4 Config客户端之动态刷新</h3><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105220056339.png" alt="image-20211105220056339"></p>
+<h2 id="14-SpringCloud-Bus动态刷新全局广播"><a href="#14-SpringCloud-Bus动态刷新全局广播" class="headerlink" title="14.SpringCloud Bus动态刷新全局广播"></a>14.SpringCloud Bus动态刷新全局广播</h2><h3 id="14-1-概述"><a href="#14-1-概述" class="headerlink" title="14.1 概述"></a>14.1 概述</h3><h4 id="14-1-1-是什么"><a href="#14-1-1-是什么" class="headerlink" title="14.1.1 是什么"></a>14.1.1 是什么</h4><p>Spring Cloud Bus 配合 Spring Cloud Config 使用可以实现配置的动态刷新。</p>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105220332912.png" alt="image-20211105220332912"></p>
+<p>Spring Cloud Bus是用来将分布式系统的节点与轻量级消息系统链接起来的框架，<br>它整合了Java的事件处理机制和消息中间件的功能。<br>Spring Clud Bus目前支持RabbitMQ和Kafka。</p>
+<h4 id="14-1-2-能干嘛"><a href="#14-1-2-能干嘛" class="headerlink" title="14.1.2 能干嘛"></a>14.1.2 能干嘛</h4><p>Spring Cloud Bus能管理和传播分布式系统间的消息，就像一个分布式执行器，可用于广播状态更改、事件推送等，也可以当作微服务间的通信通道。</p>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105220451461.png" alt="image-20211105220451461"></p>
+<h4 id="14-1-3-总线是什么"><a href="#14-1-3-总线是什么" class="headerlink" title="14.1.3 总线是什么"></a>14.1.3 总线是什么</h4><p><strong>什么是总线</strong><br>在微服务架构的系统中，通常会使用轻量级的消息代理来构建一个共用的消息主题，并让系统中所有微服务实例都连接上来。由于该主题中产生的消息会被所有实例监听和消费，所以称它为消息总线。在总线上的各个实例，都可以方便地广播一些需要让其他连接在该主题上的实例都知道的消息。</p>
+<p><strong>基本原理</strong><br>ConfigClient实例都监听MQ中同一个topic(默认是springCloudBus)。当一个服务刷新数据的时候，它会把这个信息放入到Topic中，这样其它监听同一Topic的服务就能得到通知，然后去更新自身的配置。</p>
+<h3 id="14-2-RabbitMQ环境配置"><a href="#14-2-RabbitMQ环境配置" class="headerlink" title="14.2 RabbitMQ环境配置"></a>14.2 RabbitMQ环境配置</h3><p>见本博客Rabbitmq文章</p>
+<h3 id="14-3-Bus动态刷新全局广播"><a href="#14-3-Bus动态刷新全局广播" class="headerlink" title="14.3 Bus动态刷新全局广播"></a>14.3 Bus动态刷新全局广播</h3><h4 id="14-3-1-cloud-config-client-3366"><a href="#14-3-1-cloud-config-client-3366" class="headerlink" title="14.3.1 cloud-config-client-3366"></a>14.3.1 cloud-config-client-3366</h4><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105220739955.png" alt="image-20211105220739955"></p>
+<h4 id="14-3-2-设计思想"><a href="#14-3-2-设计思想" class="headerlink" title="14.3.2 设计思想"></a>14.3.2 设计思想</h4><blockquote>
+<p>1）利用消息总线触发一个客户端/bus/refresh,而刷新所有客户端的配置(不推荐)</p>
+</blockquote>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105220807264.png" alt="image-20211105220807264"></p>
+<blockquote>
+<p>2）利用消息总线触发一个服务端ConfigServer的/bus/refresh端点，而刷新所有客户端的配置(推荐)</p>
+</blockquote>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105220905238.png" alt="image-20211105220905238"></p>
+<p>图二的架构显然更加适合，图一不适合的原因如下:</p>
+<ol>
+<li>打破了微服务的职责单一性，因为微服务本身是业务模块，它本不应该承担配置刷新的职责。</li>
+<li>破坏了微服务各节点的对等性。</li>
+<li>有一定的局限性。例如，微服务在迁移时，它的网络地址常常会发生变化，此时如果想要做到自动刷新，那就会增加更多的修改</li>
+</ol>
+<h4 id="14-3-3-修改配置"><a href="#14-3-3-修改配置" class="headerlink" title="14.3.3 修改配置"></a>14.3.3 修改配置</h4><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105221103350.png" alt="image-20211105221103350"></p>
+<h4 id="14-3-4-测试"><a href="#14-3-4-测试" class="headerlink" title="14.3.4 测试"></a>14.3.4 测试</h4><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105221131398.png" alt="image-20211105221131398"></p>
+<h3 id="14-4-Bus动态刷新定点通知"><a href="#14-4-Bus动态刷新定点通知" class="headerlink" title="14.4 Bus动态刷新定点通知"></a>14.4 Bus动态刷新定点通知</h3><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105221221929.png" alt="image-20211105221221929"></p>
+<pre class=" language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#只通知3355，不通知3366</span>
+curl -X POST <span class="token string">"http://localhost:3344/actuator/bus-refresh/config-client:3355"</span>
+</code></pre>
+<h2 id="15-SpringCloud-Stream消息驱动"><a href="#15-SpringCloud-Stream消息驱动" class="headerlink" title="15.SpringCloud Stream消息驱动"></a>15.SpringCloud Stream消息驱动</h2><p>中文指导手册：<a href="https://m.wang1314.com/doc/webapp/topic/20971999.html">https://m.wang1314.com/doc/webapp/topic/20971999.html</a></p>
+<p>官网：<a href="https://cloud.spring.io/spring-cloud-static/spring-cloud-stream/3.0.1.RELEASE/reference/html/">https://cloud.spring.io/spring-cloud-static/spring-cloud-stream/3.0.1.RELEASE/reference/html/</a></p>
+<h3 id="15-1-消息驱动概述"><a href="#15-1-消息驱动概述" class="headerlink" title="15.1 消息驱动概述"></a>15.1 消息驱动概述</h3><blockquote>
+<p>SpringCloudStream是什么</p>
+</blockquote>
+<p>官方定义 Spring Cloud Stream 是一个构建消息驱动微服务的框架。</p>
+<p>应用程序通过 inputs 或者 outputs 来与 Spring Cloud Stream中binder对象交互。<br>通过我们配置来binding(绑定) ，而 Spring Cloud Stream 的 binder对象负责与消息中间件交互。<br>所以，我们只需要搞清楚如何与 Spring Cloud Stream 交互就可以方便使用消息驱动的方式。</p>
+<p>通过使用Spring Integration来连接消息代理中间件以实现消息事件驱动。<br>Spring Cloud Stream 为一些供应商的消息中间件产品提供了个性化的自动化配置实现，引用了发布-订阅、消费组、分区的三个核心概念。</p>
+<p>目前仅支持RabbitMQ、Kafka。</p>
+<p>总结：<font>屏蔽底层消息中间件的差异,降低切换成本，统一消息的编程模型</font></p>
+<h3 id="15-2-设计思想"><a href="#15-2-设计思想" class="headerlink" title="15.2 设计思想"></a>15.2 设计思想</h3><h4 id="15-2-1-标准MQ"><a href="#15-2-1-标准MQ" class="headerlink" title="15.2.1 标准MQ"></a>15.2.1 标准MQ</h4><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105221822546.png" alt="image-20211105221822546"></p>
+<h4 id="15-2-2-为什么用Cloud-Stream"><a href="#15-2-2-为什么用Cloud-Stream" class="headerlink" title="15.2.2 为什么用Cloud Stream"></a>15.2.2 为什么用Cloud Stream</h4><p>比方说我们用到了RabbitMQ和Kafka，由于这两个消息中间件的架构上的不同，<br>像RabbitMQ有exchange，kafka有Topic和Partitions分区。</p>
+<p>这些中间件的差异性导致我们实际项目开发给我们造成了一定的困扰，我们如果用了两个消息队列的其中一种，后面的业务需求，我想往另外一种消息队列进行迁移，这时候无疑就是一个灾难性的，一大堆东西都要重新推倒重新做，因为它跟我们的系统耦合了，这时候springcloud Stream给我们提供了<strong>一种解耦合</strong>的方式。</p>
+<blockquote>
+<p>stream凭什么可以统一底层差异？</p>
+</blockquote>
+<p>在没有<strong>绑定器</strong>这个概念的情况下，我们的SpringBoot应用要直接与消息中间件进行信息交互的时候，由于各消息中间件构建的初衷不同，它们的实现细节上会有较大的差异性<br>通过定义绑定器作为中间层，完美地实现了应用程序与消息中间件细节之间的隔离。<br>通过向应用程序暴露统一的Channel通道，使得应用程序不需要再考虑各种不同的消息中间件实现。</p>
+<p><strong>通过定义绑定器Binder作为中间层，实现了应用程序与消息中间件细节之间的隔离。</strong></p>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105222117356.png" alt="image-20211105222117356"></p>
+<p>Binder可以生成Binding，Binding用来绑定消息容器的生产者和消费者，它有两种类型，<code>INPUT</code>和<code>OUTPUT</code>，INPUT对应于消费者，OUTPUT对应于生产者。</p>
+<blockquote>
+<p>发布-订阅模式</p>
+</blockquote>
+<p>Stream中的消息通信方式遵循了发布-订阅模式</p>
+<p>Topic主题进行广播:</p>
+<ul>
+<li>在RabbitMQ就是Exchange</li>
+<li>在Kakfa中就是Topic</li>
+</ul>
+<h3 id="15-3-Stream标准流程套路"><a href="#15-3-Stream标准流程套路" class="headerlink" title="15.3 Stream标准流程套路"></a>15.3 Stream标准流程套路</h3><p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105222324954.png" alt="image-20211105222324954"></p>
+<p><code>binder</code>:很方便的连接中间件，屏蔽差异</p>
+<p><code>Channel</code>:通道，是队列Queue的一种抽象，在消息通讯系统中就是实现存储和转发的媒介，通过Channel对队列进行配置</p>
+<p><code>Source和Sink</code>:简单的可理解为参照对象是Spring Cloud Stream自身，从Stream发布消息就是输出，接受消息就是输入。</p>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105222453582.png" alt="image-20211105222453582"></p>
+<h3 id="15-4-模块构建"><a href="#15-4-模块构建" class="headerlink" title="15.4 模块构建"></a>15.4 模块构建</h3><ol>
+<li>cloud-stream-rabbitmq-provider8801， 作为生产者进行发消息模块</li>
+<li>cloud-stream-rabbitmq-consumer8802，作为消息接收模块1</li>
+<li>cloud-stream-rabbitmq-consumer8803  作为消息接收模块2</li>
+</ol>
+<p>启动7001-&gt;8801-&gt;8802-&gt;8803</p>
+<p>运行后有两个问题:</p>
+<ul>
+<li>有重复消费问题</li>
+<li>消息持久化问题</li>
+</ul>
+<h3 id="15-5-分组消费与持久化"><a href="#15-5-分组消费与持久化" class="headerlink" title="15.5 分组消费与持久化"></a>15.5 分组消费与持久化</h3><blockquote>
+<p> 重复消费问题</p>
+</blockquote>
+<p>目前是8802/8803同时都收到了，存在重复消费问题<img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105223034102.png" alt="image-20211105223034102"></p>
+<blockquote>
+<p>解决方案</p>
+</blockquote>
+<p>分组和持久化属性group</p>
+<p>如在如下场景中，订单系统我们做集群部署，都会从RabbitMQ中获取订单信息，<br>那如果一个订单同时被两个服务获取到，那么就会造成数据错误，我们得避免这种情况。<br>这时我们就可以使用Stream中的消息分组来解决</p>
+<img src="../images/2021-10-31-springcloud学习笔记/image-20211105223226628.png" alt="image-20211105223226628" style="zoom:67%;">
+
+<p>注意在Stream中处于<strong>同一个group中的多个消费者是竞争关系</strong>，就能够保证消息只会被其中一个应用消费一次。<br>不同组是可以全面消费的(重复消费)，<br>同一组内会发生竞争关系，只有其中一个可以消费。</p>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105223316082.png" alt="image-20211105223316082"></p>
+<blockquote>
+<p>持久化</p>
+</blockquote>
+<p><img src="/../images/2021-10-31-springcloud%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20211105223350659.png" alt="image-20211105223350659"></p>
 </body></html>]]></content>
+      <categories>
+        <category>微服务</category>
+      </categories>
+      <tags>
+        <tag>springcloud</tag>
+      </tags>
   </entry>
 </search>
