@@ -6180,4 +6180,495 @@ curl -X POST <span class="token string">"http://localhost:3344/actuator/bus-refr
         <tag>springcloud</tag>
       </tags>
   </entry>
+  <entry>
+    <title>springcloud Alibaba</title>
+    <url>/2021/11/06/springcloud%20Alibaba/</url>
+    <content><![CDATA[<html><head></head><body><h1 id="SpringCloud-Alibaba"><a href="#SpringCloud-Alibaba" class="headerlink" title="SpringCloud Alibaba"></a>SpringCloud Alibaba</h1><h2 id="1-入门简介"><a href="#1-入门简介" class="headerlink" title="1.入门简介"></a>1.入门简介</h2><p>官网:<a href="https://spring.io/projects/spring-cloud-alibaba#overview">https://spring.io/projects/spring-cloud-alibaba#overview</a></p>
+<p>中文：<a href="https://github.com/alibaba/spring-cloud-alibaba/blob/master/README-zh.md">https://github.com/alibaba/spring-cloud-alibaba/blob/master/README-zh.md</a></p>
+<p>英文：<a href="https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html">https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html</a></p>
+<h3 id="1-1-为什么会出现SpringCloud-alibaba？"><a href="#1-1-为什么会出现SpringCloud-alibaba？" class="headerlink" title="1.1 为什么会出现SpringCloud alibaba？"></a>1.1 为什么会出现SpringCloud alibaba？</h3><p>Spring Cloud Netflix项目进入维护模式。</p>
+<p>spring Cloud Netflix 将不再开发新的组件。<br>我们都知道Spring Cloud 版本迭代算是比较快的，因而出现了很多重大ISSUE都还来不及Fix就又推另一个Release了。进入维护模式意思就是目前一直以后一段时间Spring Cloud Netflix提供的服务和功能就这么多了，不在开发新的组件和功能了。以后将以维护和Merge分支Full Request为主。</p>
+<p>新组件功能将以其他替代平代替的方式实现。</p>
+<h3 id="1-2-SpringCloud-alibaba带来了什么"><a href="#1-2-SpringCloud-alibaba带来了什么" class="headerlink" title="1.2 SpringCloud alibaba带来了什么"></a>1.2 SpringCloud alibaba带来了什么</h3><blockquote>
+<p>1.是什么</p>
+</blockquote>
+<p><code>SpringCloud Alibaba</code>,它是由一些阿里巴巴的开源组件和云产品组成的。这个项目的目的是为了让大家所熟知的Spring框架，其优秀的设计模式和抽象理念，以给使用阿里巴巴产品的Java开发者带来使用<code>SpringBoot</code>和<code>SpringCloud</code>的更多便利。</p>
+<blockquote>
+<p>2.能干嘛</p>
+</blockquote>
+<ul>
+<li><p>服务限流降级：默认支持 <code>Servlet</code>、<code>Feign</code>、<code>RestTemplate</code>、<code>Dubbo</code> 和 <code>RocketMQ</code> 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。</p>
+</li>
+<li><p>服务注册与发现：适配 Spring Cloud 服务注册与发现标准，默认集成了 <code>Ribbon</code>的支持。</p>
+</li>
+<li><p>分布式配置管理：支持分布式系统中的外部化配置，配置更改时自动刷新。</p>
+</li>
+<li><p>消息驱动能力：基于 <code>Spring Cloud Stream</code> 为微服务应用构建消息驱动能力。</p>
+</li>
+<li><p>阿里云对象存储：阿里云提供的海量、安全、低成本、高可靠的云存储服务。支持在任何应用、任何时间、任何地点存储和访问任意类型的数据。</p>
+</li>
+<li><p>分布式任务调度：提供秒级、精准、高可靠、高可用的定时（基于 <code>Cron</code> 表达式）任</p>
+<p>务调度服务。同时提供分布式的任务执行模型，如网格任务。网格任务支持海量子任务均匀分配到所有 Worker（<code>schedulerx-client</code>）上执行。</p>
+</li>
+</ul>
+<blockquote>
+<p>3.下载地址</p>
+</blockquote>
+<p><a href="https://github.com/alibaba/spring-cloud-alibaba/blob/master/README-zh.md">https://github.com/alibaba/spring-cloud-alibaba/blob/master/README-zh.md</a></p>
+<blockquote>
+<p>4.怎么用</p>
+</blockquote>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211106181103003.png" alt="image-20211106181103003"></p>
+<h2 id="2-Nacos-服务注册和配置中心"><a href="#2-Nacos-服务注册和配置中心" class="headerlink" title="2.Nacos 服务注册和配置中心"></a>2.Nacos 服务注册和配置中心</h2><p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107221105102.png" alt="image-20211107221105102"></p>
+<h3 id="2-1-简介"><a href="#2-1-简介" class="headerlink" title="2.1 简介"></a>2.1 简介</h3><blockquote>
+<p>1.为什么叫Nacos</p>
+</blockquote>
+<p>前四个字母分别为<code>Naming</code>和<code>Configuration</code>的前两个字母，最后的s为<code>Service</code>。</p>
+<p>Nacos: Dynamic Naming and Configuration Service</p>
+<blockquote>
+<p>2.是什么</p>
+</blockquote>
+<p>一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。</p>
+<p>Nacos就是注册中心 + 配置中心的组合</p>
+<p>等价于 </p>
+<p>Nacos = Eureka+Config +Bus </p>
+<blockquote>
+<p>3.能干嘛</p>
+</blockquote>
+<ul>
+<li>替代Eureka做服务注册中心</li>
+<li>替代Config做服务配置中心</li>
+</ul>
+<blockquote>
+<p>4.去哪下</p>
+</blockquote>
+<p>下载地址：<a href="https://github.com/alibaba/Nacos">https://github.com/alibaba/Nacos</a></p>
+<p>官网文档:<a href="https://nacos.io/zh-cn/index.html">https://nacos.io/zh-cn/index.html</a></p>
+<blockquote>
+<p>5.各种注册中心比较</p>
+</blockquote>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211106185450229.png" alt="image-20211106185450229"></p>
+<p>Nacos 在阿里巴巴内部有超过 10 万的实例运行，已经过了类似双十一等各种大型流量的考验</p>
+<h3 id="2-2-安装并运行"><a href="#2-2-安装并运行" class="headerlink" title="2.2 安装并运行"></a>2.2 安装并运行</h3><blockquote>
+<p>1.下载</p>
+</blockquote>
+<p><a href="https://github.com/alibaba/nacos/releases">https://github.com/alibaba/nacos/releases</a></p>
+<p>可选<code>Windows</code>版和<code>Linux</code>版</p>
+<blockquote>
+<p>2.Windows版</p>
+</blockquote>
+<p>下载到本地，解压安装包，从bin目录直接运行cmd,输入命令启动</p>
+<pre class=" language-bash"><code class="language-bash">startup.cmd -m standalone
+</code></pre>
+<p>命令运行成功后直接访问<a href="http://localhost:8848/nacos">http://localhost:8848/nacos</a></p>
+<p>默认账号密码都是<code>nacos</code></p>
+<p>进入如下界面<img src="../images/2021-11-06-springcloud-Alibaba/image-20211106191932963.png" alt="image-20211106191932963" style="zoom:80%;"></p>
+<h3 id="2-4-服务注册中心"><a href="#2-4-服务注册中心" class="headerlink" title="2.4 服务注册中心"></a>2.4 服务注册中心</h3><blockquote>
+<p>1.基于Nacos的服务提供者</p>
+</blockquote>
+<p>创建<code>moudle</code>:</p>
+<ul>
+<li>cloudalibaba-provider-payment9001</li>
+<li>cloudalibaba-provider-payment9002</li>
+</ul>
+<ol>
+<li><p>向父pom添加</p>
+<pre class=" language-xml"><code class="language-xml"> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.alibaba.cloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>spring-cloud-alibaba-dependencies<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>2.1.0.RELEASE<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>type</span><span class="token punctuation">&gt;</span></span>pom<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>type</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">&gt;</span></span>import<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+</li>
+<li><p>本模块pom</p>
+<pre class=" language-xml"><code class="language-xml"> <span class="token comment" spellcheck="true">&lt;!--SpringCloud ailibaba nacos --&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.alibaba.cloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>spring-cloud-starter-alibaba-nacos-discovery<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+</code></pre>
+</li>
+<li><p>yml</p>
+</li>
+<li><p>主启动 + <code>@EnableDiscoveryClient</code></p>
+</li>
+<li><p>业务类</p>
+</li>
+<li><p>测试:<a href="http://localhost:9001/payment/nacos/1">http://localhost:9001/payment/nacos/1</a></p>
+</li>
+</ol>
+<blockquote>
+<p>2.基于Nacos的服务消费者</p>
+</blockquote>
+<p><code>moudle</code>:cloudalibaba-consumer-nacos-order83</p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211106192913393.png" alt="image-20211106192913393"></p>
+<p>测试：<a href="http://localhost:83/consumer/payment/nacos/13">http://localhost:83/consumer/payment/nacos/13</a></p>
+<blockquote>
+<p>3.服务注册中心对比</p>
+</blockquote>
+<p><strong>Nacos全景图：</strong></p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211106193107843.png" alt="image-20211106193107843"></p>
+<p><strong>Nacos和CAP：</strong></p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211106193216590.png" alt="image-20211106193216590"></p>
+<h3 id="2-5-配置服务中心"><a href="#2-5-配置服务中心" class="headerlink" title="2.5 配置服务中心"></a>2.5 配置服务中心</h3><h4 id="2-5-1-基础配置"><a href="#2-5-1-基础配置" class="headerlink" title="2.5.1 基础配置"></a>2.5.1 基础配置</h4><blockquote>
+<p>1.cloudalibaba-config-nacos-client3377</p>
+</blockquote>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211106193433836.png" alt="image-20211106193433836"></p>
+<blockquote>
+<p>2.在nacos中添加配置</p>
+</blockquote>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211106193537120.png" alt="image-20211106193537120"></p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211106193607156.png" alt="image-20211106193607156"></p>
+<ul>
+<li><code>prefix</code> 默认为 <code>spring.application.name</code> 的值</li>
+<li><code>spring.profile.active</code> 即为当前环境对应的 profile，可以通过配置项 <code>spring.profile.active</code> 来配置。</li>
+<li><code>file-exetension</code> 为配置内容的数据格式，可以通过配置项 <code>spring.cloud.nacos.config.file-extension</code> 来配置</li>
+</ul>
+<blockquote>
+<p>3.历史配置</p>
+</blockquote>
+<p>Nacos会记录配置文件的历史版本默认保留30天，此外还有一键回滚功能，回滚操作将会触发配置更新</p>
+<blockquote>
+<p>4.测试</p>
+</blockquote>
+<ol>
+<li>运行cloud-config-nacos-client3377的主启动类</li>
+<li><a href="http://localhost:3377/config/info">http://localhost:3377/config/info</a></li>
+</ol>
+<p>调用接口查看配置信息</p>
+<p><font>自带动态刷新</font></p>
+<p>修改下Nacos中的yaml配置文件，再次调用查看配置的接口，就会发现配置已经刷新</p>
+<h4 id="2-5-2-分类配置"><a href="#2-5-2-分类配置" class="headerlink" title="2.5.2 分类配置"></a>2.5.2 分类配置</h4><blockquote>
+<p>1.多环境多项目管理</p>
+</blockquote>
+<p><strong>问题1：</strong><br>实际开发中，通常一个系统会准备<br>dev开发环境<br>test测试环境<br>prod生产环境。<br>如何保证指定环境启动时服务能正确读取到Nacos上相应环境的配置文件呢？*</p>
+<p><strong>问题2：</strong><br>一个大型分布式微服务系统会有很多微服务子项目，<br>每个微服务项目又都会有相应的开发环境、测试环境、预发环境、正式环境……<br>那怎么对这些微服务配置进行管理呢？</p>
+<blockquote>
+<p>Namespace+Group+Data ID</p>
+</blockquote>
+<p><strong>1 是什么</strong><br>   类似Java里面的package名和类名<br>   最外层的namespace是可以用于区分部署环境的，Group和DataID逻辑上区分两个目标对象。</p>
+<p><strong>可以通过三个限定定位到任何一个所存在的配置文件</strong></p>
+<p><strong>2 三者情况</strong><br>    <img src="/../images/2021-11-06-springcloud-Alibaba/image-20211106194442726.png" alt="image-20211106194442726"><br>默认情况：<br><code>Namespace=public，Group=DEFAULT_GROUP, 默认Cluster是DEFAULT</code></p>
+<p>Nacos默认的命名空间是public，Namespace主要用来实现隔离。<br>比方说我们现在有三个环境：开发、测试、生产环境，我们就可以创建三个Namespace，不同的Namespace之间是隔离的。</p>
+<p>Group默认是DEFAULT_GROUP，Group可以把不同的微服务划分到同一个分组里面去</p>
+<p>Service就是微服务；一个Service可以包含多个Cluster（集群），Nacos默认Cluster是DEFAULT，Cluster是对指定微服务的一个虚拟划分。</p>
+<p>比方说为了容灾，将Service微服务分别部署在了杭州机房和广州机房，<br>这时就可以给杭州机房的Service微服务起一个集群名称（HZ），<br>给广州机房的Service微服务起一个集群名称（GZ），还可以尽量让同一个机房的微服务互相调用，以提升性能。</p>
+<p>最后是Instance，就是微服务的实例。</p>
+<h4 id="2-5-3-yaml"><a href="#2-5-3-yaml" class="headerlink" title="2.5.3 yaml"></a>2.5.3 yaml</h4><p><code>bootstrap.yaml</code>:</p>
+<pre class=" language-yaml"><code class="language-yaml"><span class="token comment" spellcheck="true"># nacos注册中心</span>
+<span class="token key atrule">server</span><span class="token punctuation">:</span>
+  <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">3377</span>
+
+<span class="token key atrule">spring</span><span class="token punctuation">:</span>
+  <span class="token key atrule">application</span><span class="token punctuation">:</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> nacos<span class="token punctuation">-</span>order
+  <span class="token key atrule">cloud</span><span class="token punctuation">:</span>
+    <span class="token key atrule">nacos</span><span class="token punctuation">:</span>
+      <span class="token key atrule">discovery</span><span class="token punctuation">:</span>
+        <span class="token key atrule">server-addr</span><span class="token punctuation">:</span> localhost<span class="token punctuation">:</span><span class="token number">8848 </span><span class="token comment" spellcheck="true">#Nacos服务注册中心地址</span>
+      <span class="token key atrule">config</span><span class="token punctuation">:</span>
+        <span class="token key atrule">server-addr</span><span class="token punctuation">:</span> localhost<span class="token punctuation">:</span><span class="token number">8848 </span><span class="token comment" spellcheck="true">#Nacos作为配置中心地址</span>
+        <span class="token key atrule">file-extension</span><span class="token punctuation">:</span> yaml <span class="token comment" spellcheck="true">#这里我们获取的yaml格式的配置</span>
+        <span class="token key atrule">namespace</span><span class="token punctuation">:</span> 5da1dccc<span class="token punctuation">-</span>ee26<span class="token punctuation">-</span>49e0<span class="token punctuation">-</span>b8e5<span class="token punctuation">-</span>7d9559b95ab0
+        <span class="token comment" spellcheck="true">#group: DEV_GROUP</span>
+        <span class="token key atrule">group</span><span class="token punctuation">:</span> TEST_GROUP
+</code></pre>
+<p><code>application.yaml</code>:</p>
+<pre class=" language-yaml"><code class="language-yaml"><span class="token comment" spellcheck="true"># Nacos注册配置，application.yml</span>
+<span class="token key atrule">spring</span><span class="token punctuation">:</span>
+  <span class="token key atrule">profiles</span><span class="token punctuation">:</span>
+    <span class="token comment" spellcheck="true">#active: test</span>
+    <span class="token key atrule">active</span><span class="token punctuation">:</span> dev
+    <span class="token comment" spellcheck="true">#active: info</span>
+</code></pre>
+<h3 id="2-6-Nacos集群和持久化配置"><a href="#2-6-Nacos集群和持久化配置" class="headerlink" title="2.6 Nacos集群和持久化配置*"></a>2.6 Nacos集群和持久化配置*</h3><h4 id="2-6-1-架构图"><a href="#2-6-1-架构图" class="headerlink" title="2.6.1 架构图"></a>2.6.1 架构图</h4><p>官网架构：</p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107213610674.png" alt="image-20211107213610674"></p>
+<p>实际架构：</p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107213639542.png" alt="image-20211107213639542"></p>
+<h4 id="2-6-2-Nacos持久化配置解释"><a href="#2-6-2-Nacos持久化配置解释" class="headerlink" title="2.6.2 Nacos持久化配置解释"></a>2.6.2 Nacos持久化配置解释</h4><p>Nacos默认自带的是嵌入式数据库derby</p>
+<p>我们需要将数据库从<code>derby</code>切换到<code>mysql</code></p>
+<ol>
+<li>nacos-server-1.1.4\nacos\conf目录下找到sql脚本 —-&gt;执行脚本</li>
+<li>nacos-server-1.1.4\nacos\conf目录下找到application.properties –&gt;添加数据库连接</li>
+</ol>
+<p>预计需要，1个Nginx+3个nacos注册中心+1个mysql</p>
+<h4 id="2-6-3-集群搭建"><a href="#2-6-3-集群搭建" class="headerlink" title="2.6.3 集群搭建"></a>2.6.3 集群搭建</h4><p>Linux服务器上mysql数据库配置</p>
+<ul>
+<li>1.开启数据库，进入数据库</li>
+</ul>
+<pre class=" language-bash"><code class="language-bash">mysql -u root -p
+
+create database nacos_config
+
+<span class="token comment" spellcheck="true">#复制粘贴nacos中的nacos-mysql.sql脚本</span>
+</code></pre>
+<ul>
+<li>2.修改<code>/nacos/conf/application.properties</code> 配置(Mysql8.0以上及得加上ServerTimeZone=UTC)</li>
+</ul>
+<pre class=" language-properties"><code class="language-properties"><span class="token attr-name">spring.datasource.platform</span><span class="token punctuation">=</span><span class="token attr-value">mysql</span>
+ 
+<span class="token attr-name">db.num</span><span class="token punctuation">=</span><span class="token attr-value">1</span>
+<span class="token attr-name">db.url.0</span><span class="token punctuation">=</span><span class="token attr-value">jdbc:mysql://127.0.0.1:3306/nacos_config?characterEncoding=utf8&amp;connectTimeout=1000&amp;socketTimeout=3000&amp;autoReconnect=true</span>
+<span class="token attr-name">db.user</span><span class="token punctuation">=</span><span class="token attr-value">root</span>
+<span class="token attr-name">db.password</span><span class="token punctuation">=</span><span class="token attr-value">jaqen</span>
+</code></pre>
+<ul>
+<li><p>3.Linux服务器上nacos的集群配置cluster.conf</p>
+<p>复制<code>cluster.conf</code>原始文件</p>
+</li>
+</ul>
+<pre class=" language-bash"><code class="language-bash"><span class="token function">cp</span> cluster.conf.example cluster.conf
+<span class="token comment" spellcheck="true">#编辑</span>
+vim cluster.conf
+<span class="token comment" spellcheck="true">#这个IP不能写127.0.0.1，必须是Linux命令hostname -i能够识别的IP</span>
+<span class="token comment" spellcheck="true">#注释掉里边的内容，并添加</span>
+192.168.111.144:3333
+192.168.111.144:4444
+192.168.111.144:5555
+</code></pre>
+<ul>
+<li>4.编辑Nacos的启动脚本startup.sh，使它能够接受不同的启动端口</li>
+</ul>
+<img src="../images/2021-11-06-springcloud-Alibaba/image-20211107215431975.png" alt="image-20211107215431975" style="zoom:67%;">
+
+<img src="../images/2021-11-06-springcloud-Alibaba/image-20211107215438779.png" alt="image-20211107215438779" style="zoom:67%;">
+
+<pre class=" language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#执行方式</span>
+<span class="token punctuation">[</span>root@Linux bin<span class="token punctuation">]</span> ./startup.sh -p 3333
+</code></pre>
+<ul>
+<li>5.Nginx的配置，由它作为负载均衡器</li>
+</ul>
+<pre class=" language-conf"><code class="language-conf">#修改添加nginx.conf
+upstream cluster{
+        server 47.113.221.239:3333;
+        server 47.113.221.239:4444;
+        server 47.113.221.239:5555;
+    }
+server {
+        listen       1111;
+        server_name  localhost;
+        #charset koi8-r;
+        #access_log  logs/host.access.log  main;
+        location / {
+            #root   html;
+            #index  index.html index.htm;
+            proxy_pass http://cluster;
+        }
+</code></pre>
+<img src="../images/2021-11-06-springcloud-Alibaba/image-20211107215850640.png" alt="image-20211107215850640" style="zoom:67%;">
+
+<p>按照指定方式启动</p>
+<pre class=" language-bash"><code class="language-bash">./nginx -c /usr/local/nginx/conf/nginx.conf
+</code></pre>
+<ul>
+<li>6.截止到此处，1个Nginx+3个nacos注册中心+1个mysql</li>
+</ul>
+<ol>
+<li><p>测试通过nginx访问nacos:<a href="http://192.168.111.144:1111/nacos/#/login">http://192.168.111.144:1111/nacos/#/login</a></p>
+</li>
+<li><p>新建一个配置测试:</p>
+<img src="../images/2021-11-06-springcloud-Alibaba/image-20211107220041949.png" alt="image-20211107220041949" style="zoom: 67%;"></li>
+<li><p>如果linux服务器的mysql插入一条记录则成功</p>
+</li>
+</ol>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107220212519.png" alt="image-20211107220212519"></p>
+<h2 id="3-Sentinel实现熔断与限流"><a href="#3-Sentinel实现熔断与限流" class="headerlink" title="3.Sentinel实现熔断与限流"></a>3.Sentinel实现熔断与限流</h2><p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107221122322.png" alt="image-20211107221122322"></p>
+<h3 id="3-1-Sentinel-简介"><a href="#3-1-Sentinel-简介" class="headerlink" title="3.1 Sentinel 简介"></a>3.1 Sentinel 简介</h3><blockquote>
+<p>官网</p>
+</blockquote>
+<p>英文：<a href="https://github.com/alibaba/Sentinel">https://github.com/alibaba/Sentinel</a></p>
+<p>中文：<a href="https://github.com/alibaba/Sentinel/wiki/%E4%BB%8B%E7%BB%8D">https://github.com/alibaba/Sentinel/wiki/%E4%BB%8B%E7%BB%8D</a></p>
+<blockquote>
+<p>是什么</p>
+</blockquote>
+<p>随着微服务的流行，服务和服务之间的稳定性变得越来越重要。Sentinel 以流量为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。</p>
+<p>类似于Hystrix（豪猪哥）。</p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107220634267.png" alt="image-20211107220634267"></p>
+<blockquote>
+<p>服务使用中的各种问题</p>
+</blockquote>
+<ul>
+<li>服务雪崩</li>
+<li>服务降级</li>
+<li>服务熔断</li>
+<li>服务限流</li>
+</ul>
+<h3 id="3-2-下载与安装"><a href="#3-2-下载与安装" class="headerlink" title="3.2 下载与安装"></a>3.2 下载与安装</h3><blockquote>
+<p>下载地址</p>
+</blockquote>
+<p><a href="https://github.com/alibaba/Sentinel/releases">https://github.com/alibaba/Sentinel/releases</a></p>
+<blockquote>
+<p>安装步骤</p>
+</blockquote>
+<p>前提条件：java8环境OK &amp;&amp; 8080端口不能被占用</p>
+<p>下载到本地，直接通过cmd启动输入：</p>
+<pre class=" language-bash"><code class="language-bash">java -jar sentinel-dashboard-1.8.2.jar
+</code></pre>
+<blockquote>
+<p>访问sentinel管理界面</p>
+</blockquote>
+<p><a href="http://localhost:8080/">http://localhost:8080</a></p>
+<p>登录账号密码均为sentinel</p>
+<h3 id="3-3-初始化演示工程"><a href="#3-3-初始化演示工程" class="headerlink" title="3.3 初始化演示工程"></a>3.3 初始化演示工程</h3><p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107221225142.png" alt="image-20211107221225142"></p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107221248001.png" alt="image-20211107221248001"></p>
+<h3 id="3-4详细规则使用"><a href="#3-4详细规则使用" class="headerlink" title="3.4详细规则使用"></a>3.4详细规则使用</h3><p>参考官方使用文档：<a href="https://sentinelguard.io/zh-cn/docs/introduction.html">https://sentinelguard.io/zh-cn/docs/introduction.html</a></p>
+<blockquote>
+<p>流控规则</p>
+</blockquote>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107222731744.png" alt="image-20211107222731744"></p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107222839375.png" alt="image-20211107222839375"></p>
+<blockquote>
+<p>降级规则</p>
+</blockquote>
+<p>Sentinel 提供以下几种熔断策略：</p>
+<ul>
+<li>慢调用比例 (<code>SLOW_REQUEST_RATIO</code>)：选择以慢调用比例作为阈值，需要设置允许的慢调用 RT（即最大的响应时间），请求的响应时间大于该值则统计为慢调用。当单位统计时长（<code>statIntervalMs</code>）内请求数目大于设置的最小请求数目，并且慢调用的比例大于阈值，则接下来的熔断时长内请求会自动被熔断。经过熔断时长后熔断器会进入探测恢复状态（HALF-OPEN 状态），若接下来的一个请求响应时间小于设置的慢调用 RT 则结束熔断，若大于设置的慢调用 RT 则会再次被熔断。</li>
+<li>异常比例 (<code>ERROR_RATIO</code>)：当单位统计时长（<code>statIntervalMs</code>）内请求数目大于设置的最小请求数目，并且异常的比例大于阈值，则接下来的熔断时长内请求会自动被熔断。经过熔断时长后熔断器会进入探测恢复状态（HALF-OPEN 状态），若接下来的一个请求成功完成（没有错误）则结束熔断，否则会再次被熔断。异常比率的阈值范围是 <code>[0.0, 1.0]</code>，代表 0% - 100%。</li>
+<li>异常数 (<code>ERROR_COUNT</code>)：当单位统计时长内的异常数目超过阈值之后会自动进行熔断。经过熔断时长后熔断器会进入探测恢复状态（HALF-OPEN 状态），若接下来的一个请求成功完成（没有错误）则结束熔断，否则会再次被熔断。</li>
+</ul>
+<p>熔断降级规则（DegradeRule）包含下面几个重要的属性：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Field</th>
+<th align="left">说明</th>
+<th align="left">默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">resource</td>
+<td align="left">资源名，即规则的作用对象</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="center">grade</td>
+<td align="left">熔断策略，支持慢调用比例/异常比例/异常数策略</td>
+<td align="left">慢调用比例</td>
+</tr>
+<tr>
+<td align="center">count</td>
+<td align="left">慢调用比例模式下为慢调用临界 RT（超出该值计为慢调用）；异常比例/异常数模式下为对应的阈值</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="center">timeWindow</td>
+<td align="left">熔断时长，单位为 s</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="center">minRequestAmount</td>
+<td align="left">熔断触发的最小请求数，请求数小于该值时即使异常比率超出阈值也不会熔断（1.7.0 引入）</td>
+<td align="left">5</td>
+</tr>
+<tr>
+<td align="center">statIntervalMs</td>
+<td align="left">统计时长（单位为 ms），如 60*1000 代表分钟级（1.8.0 引入）</td>
+<td align="left">1000 ms</td>
+</tr>
+<tr>
+<td align="center">slowRatioThreshold</td>
+<td align="left">慢调用比例阈值，仅慢调用比例模式有效（1.8.0 引入）</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>热点规则</p>
+</blockquote>
+<p>何为热点？热点即经常访问的数据。很多时候我们希望统计某个热点数据中访问频次最高的 Top K 数据，并对其访问进行限制。比如：</p>
+<ul>
+<li>商品 ID 为参数，统计一段时间内最常购买的商品 ID 并进行限制</li>
+<li>用户 ID 为参数，针对一段时间内频繁访问的用户 ID 进行限制</li>
+</ul>
+<p>热点参数限流会统计传入参数中的热点参数，并根据配置的限流阈值与模式，对包含热点参数的资源调用进行限流。热点参数限流可以看做是一种特殊的流量控制，仅对包含热点参数的资源调用生效。</p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211107223556271.png" alt="image-20211107223556271"></p>
+<p>限流模式只支持QPS模式，固定写死了。（这才叫热点）<br>@SentinelResource注解的方法参数索引，0代表第一个参数，1代表第二个参数，以此类推<br>单机阀值以及统计窗口时长表示在此窗口时间超过阀值就限流。<br>上面的抓图就是第一个参数有值的话，1秒的QPS为1，超过就限流，限流后调用<code>dealHandler_testHotKey</code>支持兜底方法。</p>
+<p><font>参数例外项</font></p>
+<img src="../images/2021-11-06-springcloud-Alibaba/image-20211107223748576.png" alt="image-20211107223748576" style="zoom:67%;">
+
+<blockquote>
+<p>@SentinelResource</p>
+</blockquote>
+<p><strong>客户自定义限流处理逻辑</strong></p>
+<ul>
+<li>创建CustomerBlockHandler类用于自定义限流处理逻辑</li>
+</ul>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomerBlockHandler</span><span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> CommonResult <span class="token function">handleException1</span><span class="token punctuation">(</span>BlockException e<span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">CommonResult</span><span class="token punctuation">(</span><span class="token number">2021</span><span class="token punctuation">,</span><span class="token string">"自定义的限流处理信息1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+                                               
+   <span class="token keyword">public</span> <span class="token keyword">static</span> CommonResult <span class="token function">handleException2</span><span class="token punctuation">(</span>BlockException e<span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">CommonResult</span><span class="token punctuation">(</span><span class="token number">2021</span><span class="token punctuation">,</span><span class="token string">"自定义的限流处理信息2"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<ul>
+<li>RateLimitController</li>
+</ul>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RestController</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RateLimitController</span><span class="token punctuation">{</span>
+    
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/rateLimit/customerBlockHandler"</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@SentinelResource</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"customerBlockHandler"</span><span class="token punctuation">,</span>blockHandlerClass <span class="token operator">=</span> CustomerBlockHandler<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> blockHandler <span class="token operator">=</span> <span class="token string">"handleException2"</span><span class="token punctuation">)</span>
+    
+    <span class="token keyword">public</span> CommonResult <span class="token function">customerBlockHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">CommonResult</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token string">"正常业务流程"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<blockquote>
+<p>服务熔断</p>
+</blockquote>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RestController</span>
+<span class="token annotation punctuation">@Slf4j</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CircleBreakerController</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> String SERVICE_URL <span class="token operator">=</span> <span class="token string">"http://nacos-payment-provider"</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span> RestTemplate restTemplate<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/consumer/fallback/{id}"</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">//1.没有兜底方案，返回界面不友好</span>
+    <span class="token annotation punctuation">@SentinelResource</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"fallback"</span><span class="token punctuation">)</span> 
+    <span class="token comment" spellcheck="true">//2.fallback负责业务异常   </span>
+    <span class="token annotation punctuation">@SentinelResource</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"fallback"</span><span class="token punctuation">,</span>fallback <span class="token operator">=</span> <span class="token string">"handlerFallback"</span><span class="token punctuation">)</span> 
+    <span class="token comment" spellcheck="true">//3.blockHandler负责在sentinel里面配置的降级限流</span>
+    <span class="token annotation punctuation">@SentinelResource</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"fallback"</span><span class="token punctuation">,</span>blockHandler <span class="token operator">=</span> <span class="token string">"blockHandler"</span><span class="token punctuation">)</span> 
+    <span class="token comment" spellcheck="true">//4.都配置，且添加忽略规则</span>
+    <span class="token annotation punctuation">@SentinelResource</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"fallback"</span><span class="token punctuation">,</span>fallback <span class="token operator">=</span> <span class="token string">"handlerFallback"</span><span class="token punctuation">,</span>blockHandler <span class="token operator">=</span> <span class="token string">"blockHandler"</span><span class="token punctuation">,</span> exceptionsToIgnore <span class="token operator">=</span> <span class="token punctuation">{</span>IllegalArgumentException<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//忽略非法异常</span>
+
+    <span class="token keyword">public</span> CommonResult <span class="token function">fallback</span><span class="token punctuation">(</span><span class="token annotation punctuation">@PathVariable</span><span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">)</span> Long id<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        CommonResult result <span class="token operator">=</span> restTemplate<span class="token punctuation">.</span><span class="token function">getForObject</span><span class="token punctuation">(</span>SERVICE_URL <span class="token operator">+</span> <span class="token string">"/paymentSQL/"</span> <span class="token operator">+</span> id<span class="token punctuation">,</span> CommonResult<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>id <span class="token operator">==</span> <span class="token number">4</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span> <span class="token punctuation">(</span><span class="token string">"IllegalArgumentException,非法参数异常...."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span><span class="token function">getData</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">NullPointerException</span> <span class="token punctuation">(</span><span class="token string">"NullPointerException,该ID没有对应记录,空指针异常"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//本例是fallback，处理业务异常</span>
+    <span class="token keyword">public</span> CommonResult <span class="token function">handlerFallback</span><span class="token punctuation">(</span><span class="token annotation punctuation">@PathVariable</span>  Long id<span class="token punctuation">,</span>Throwable e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Payment payment <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Payment</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span><span class="token string">"null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">CommonResult</span><span class="token operator">&lt;</span><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token number">444</span><span class="token punctuation">,</span><span class="token string">"fallback,无此流水,exception  "</span><span class="token operator">+</span>e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>payment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">//本例是blockHandler，处理配置规则</span>
+    <span class="token keyword">public</span> CommonResult <span class="token function">blockHandler</span><span class="token punctuation">(</span><span class="token annotation punctuation">@PathVariable</span>  Long id<span class="token punctuation">,</span> BlockException blockException<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Payment payment <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Payment</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span><span class="token string">"null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">CommonResult</span><span class="token operator">&lt;</span><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token number">445</span><span class="token punctuation">,</span><span class="token string">"blockHandler-sentinel限流,无此流水: blockException  "</span><span class="token operator">+</span>blockException<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>payment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+</body></html>]]></content>
+      <categories>
+        <category>微服务</category>
+      </categories>
+      <tags>
+        <tag>springcloud</tag>
+        <tag>springcloud Alibaba</tag>
+      </tags>
+  </entry>
 </search>
