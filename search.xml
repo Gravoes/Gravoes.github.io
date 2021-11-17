@@ -6064,6 +6064,308 @@ server {
         <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">CommonResult</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token number">445</span><span class="token punctuation">,</span><span class="token string">"blockHandler-sentinel限流,无此流水: blockException  "</span><span class="token operator">+</span>blockException<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>payment<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 </code></pre>
+<h2 id="4-Seata处理分布式事务"><a href="#4-Seata处理分布式事务" class="headerlink" title="4.Seata处理分布式事务"></a>4.Seata处理分布式事务</h2><p>官网：<a href="http://seata.io/zh-cn/">http://seata.io/zh-cn/</a></p>
+<h3 id="4-1-Seate简介"><a href="#4-1-Seate简介" class="headerlink" title="4.1 Seate简介"></a>4.1 Seate简介</h3><blockquote>
+<p> 1.分布式事务</p>
+</blockquote>
+<p>单体应用被拆分成微服务应用，原来的三个模块被拆分成三个独立的应用，分别使用三个独立的数据源，<br>业务操作需要调用三个服务来完成。此时每个服务内部的数据一致性由本地事务来保证，但是全局的数据一致性问题没法保证。</p>
+<p><strong>一次业务操作需要跨多个数据源或需要跨多个系统进行远程调用，就会产生分布式事务问题</strong><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211108205815232.png" alt="image-20211108205815232"></p>
+<blockquote>
+<p>2.是什么</p>
+</blockquote>
+<p>Seata是一款开源的分布式事务解决方案，致力于在微服务架构下提供高性能和简单易用的分布式事务服务。</p>
+<p><strong>分布式事务处理过程的ID+三组件模型</strong></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Transaction ID （XID）</td>
+<td>全局唯一的事务ID</td>
+</tr>
+<tr>
+<td>Transaction Coordinator (TC)</td>
+<td>事务协调器，维护<strong>全局事务</strong>的运行状态，负责协调并驱动全局事务的提交或回滚；</td>
+</tr>
+<tr>
+<td>Transaction Manager (TM)</td>
+<td>控制全局事务的边界，负责<strong>开启一个全局事务</strong>，并最终发起全局提交或全局回滚的决议；</td>
+</tr>
+<tr>
+<td>Resource Manager (RM)</td>
+<td><strong>控制分支事务</strong>，负责分支注册、状态汇报，并接收事务协调器的指令，驱动分支（本地）事务的提交和回滚</td>
+</tr>
+</tbody></table>
+<p>处理过程：</p>
+<ol>
+<li>TM 向 TC 申请开启一个全局事务，全局事务创建成功并生成一个全局唯一的 XID；</li>
+<li>XID 在微服务调用链路的上下文中传播；</li>
+<li>RM 向 TC 注册分支事务，将其纳入 XID 对应全局事务的管辖；</li>
+<li>TM 向 TC 发起针对 XID 的全局提交或回滚决议；</li>
+<li>TC 调度 XID 下管辖的全部分支事务完成提交或回滚请求。</li>
+</ol>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211108210419209.png" alt="image-20211108210419209"></p>
+<blockquote>
+<p>咋么用</p>
+</blockquote>
+<p>本地<code>@Transactional</code></p>
+<p>全局<code>@GlobalTransactional</code></p>
+<h3 id="4-2-Seata-Server安装"><a href="#4-2-Seata-Server安装" class="headerlink" title="4.2  Seata-Server安装"></a>4.2  Seata-Server安装</h3><blockquote>
+<p>下载地址</p>
+</blockquote>
+<p><a href="https://github.com/seata/seata/releases">https://github.com/seata/seata/releases</a></p>
+<p>下载的是seata-server-1.0.0.zip</p>
+<blockquote>
+<p>安装</p>
+</blockquote>
+<ol>
+<li><p>下载并解压到指定目录</p>
+</li>
+<li><p>备份<code>file.conf</code>和<code>registry.conf</code></p>
+</li>
+<li><p>主要修改：<code>file.conf</code>自定义事务组名称+事务日志存储模式为db+数据库连接信息</p>
+<p>   <code>registry.conf</code> 配置nacos注册中心，并指定端口号serverAddr=”localhost:8848”</p>
+</li>
+<li><p>mysql下新建数据库<code>seata</code>,并键表<code>branch_table</code>,<code>global_table</code>,<code>lock_table</code></p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- the table to store GlobalSession data</span>
+<span class="token keyword">drop</span> <span class="token keyword">table</span> <span class="token keyword">if</span> <span class="token keyword">exists</span> <span class="token punctuation">`</span>global_table<span class="token punctuation">`</span><span class="token punctuation">;</span>
+<span class="token keyword">create</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>global_table<span class="token punctuation">`</span> <span class="token punctuation">(</span>
+  <span class="token punctuation">`</span>xid<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span>  <span class="token operator">not</span> <span class="token boolean">null</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>transaction_id<span class="token punctuation">`</span> <span class="token keyword">bigint</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span><span class="token keyword">status</span><span class="token punctuation">`</span> <span class="token keyword">tinyint</span> <span class="token operator">not</span> <span class="token boolean">null</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>application_id<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>transaction_service_group<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>transaction_name<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>timeout<span class="token punctuation">`</span> <span class="token keyword">int</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>begin_time<span class="token punctuation">`</span> <span class="token keyword">bigint</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>application_data<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">2000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>gmt_create<span class="token punctuation">`</span> <span class="token keyword">datetime</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>gmt_modified<span class="token punctuation">`</span> <span class="token keyword">datetime</span><span class="token punctuation">,</span>
+  <span class="token keyword">primary</span> <span class="token keyword">key</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>xid<span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">key</span> <span class="token punctuation">`</span>idx_gmt_modified_status<span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>gmt_modified<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span><span class="token keyword">status</span><span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">key</span> <span class="token punctuation">`</span>idx_transaction_id<span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>transaction_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+<span class="token comment" spellcheck="true">-- the table to store BranchSession data</span>
+<span class="token keyword">drop</span> <span class="token keyword">table</span> <span class="token keyword">if</span> <span class="token keyword">exists</span> <span class="token punctuation">`</span>branch_table<span class="token punctuation">`</span><span class="token punctuation">;</span>
+<span class="token keyword">create</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>branch_table<span class="token punctuation">`</span> <span class="token punctuation">(</span>
+  <span class="token punctuation">`</span>branch_id<span class="token punctuation">`</span> <span class="token keyword">bigint</span> <span class="token operator">not</span> <span class="token boolean">null</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>xid<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span> <span class="token operator">not</span> <span class="token boolean">null</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>transaction_id<span class="token punctuation">`</span> <span class="token keyword">bigint</span> <span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>resource_group_id<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>resource_id<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span> <span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>lock_key<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span> <span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>branch_type<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span> <span class="token punctuation">,</span>
+  <span class="token punctuation">`</span><span class="token keyword">status</span><span class="token punctuation">`</span> <span class="token keyword">tinyint</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>client_id<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">64</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>application_data<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">2000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>gmt_create<span class="token punctuation">`</span> <span class="token keyword">datetime</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>gmt_modified<span class="token punctuation">`</span> <span class="token keyword">datetime</span><span class="token punctuation">,</span>
+  <span class="token keyword">primary</span> <span class="token keyword">key</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>branch_id<span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">key</span> <span class="token punctuation">`</span>idx_xid<span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>xid<span class="token punctuation">`</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+<span class="token comment" spellcheck="true">-- the table to store lock data</span>
+<span class="token keyword">drop</span> <span class="token keyword">table</span> <span class="token keyword">if</span> <span class="token keyword">exists</span> <span class="token punctuation">`</span>lock_table<span class="token punctuation">`</span><span class="token punctuation">;</span>
+<span class="token keyword">create</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>lock_table<span class="token punctuation">`</span> <span class="token punctuation">(</span>
+  <span class="token punctuation">`</span>row_key<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span> <span class="token operator">not</span> <span class="token boolean">null</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>xid<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">96</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>transaction_id<span class="token punctuation">`</span> long <span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>branch_id<span class="token punctuation">`</span> long<span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>resource_id<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span> <span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>table_name<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span> <span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>pk<span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">36</span><span class="token punctuation">)</span> <span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>gmt_create<span class="token punctuation">`</span> <span class="token keyword">datetime</span> <span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>gmt_modified<span class="token punctuation">`</span> <span class="token keyword">datetime</span><span class="token punctuation">,</span>
+  <span class="token keyword">primary</span> <span class="token keyword">key</span><span class="token punctuation">(</span><span class="token punctuation">`</span>row_key<span class="token punctuation">`</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+</li>
+<li><p>先启动Nacos:<code>startup.cmd -m standalone</code></p>
+</li>
+<li><p>再启动seata-server:<code>.\seata-server.bat -p 8091 -h 127.0.0.1 -m db</code></p>
+</li>
+</ol>
+<h3 id="4-3-订单-库存-账户业务数据库准备"><a href="#4-3-订单-库存-账户业务数据库准备" class="headerlink" title="4.3 订单/库存/账户业务数据库准备"></a>4.3 订单/库存/账户业务数据库准备</h3><blockquote>
+<p>分布式事务业务说明</p>
+</blockquote>
+<p>创建三个服务，一个订单服务，一个库存服务，一个账户服务。</p>
+<ol>
+<li>当用户下单时，会在订单服务中创建一个订单，</li>
+<li>然后通过远程调用库存服务来扣减下单商品的库存，</li>
+<li>再通过远程调用账户服务来扣减用户账户里面的余额，</li>
+<li>最后在订单服务中修改订单状态为已完成。</li>
+</ol>
+<p>下订单—&gt;扣库存—&gt;减账户(余额)</p>
+<p>该操作跨越三个数据库，有两次远程调用，很明显会有分布式事务问题。</p>
+<blockquote>
+<p>创建业务数据库</p>
+</blockquote>
+<ul>
+<li><code>seata_order</code>：存储订单的数据库，并建t_order表</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql">REATE <span class="token keyword">TABLE</span> t_order <span class="token punctuation">(</span>
+  <span class="token punctuation">`</span>id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>user_id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户id'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>product_id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'产品id'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>count<span class="token punctuation">`</span> <span class="token keyword">INT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'数量'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>money<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'金额'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span><span class="token keyword">status</span><span class="token punctuation">`</span> <span class="token keyword">INT</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'订单状态：0：创建中；1：已完结'</span> 
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">INNODB</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token operator">=</span><span class="token number">7</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span><span class="token operator">=</span>utf8<span class="token punctuation">;</span>
+</code></pre>
+<ul>
+<li><code>seata_storage</code>：存储库存的数据库，并建t_storage 表</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> t_storage <span class="token punctuation">(</span>
+ <span class="token punctuation">`</span>id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span><span class="token punctuation">,</span>
+ <span class="token punctuation">`</span>product_id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'产品id'</span><span class="token punctuation">,</span>
+ <span class="token punctuation">`</span>total<span class="token punctuation">`</span> <span class="token keyword">INT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'总库存'</span><span class="token punctuation">,</span>
+ <span class="token punctuation">`</span>used<span class="token punctuation">`</span> <span class="token keyword">INT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'已用库存'</span><span class="token punctuation">,</span>
+ <span class="token punctuation">`</span>residue<span class="token punctuation">`</span> <span class="token keyword">INT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'剩余库存'</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">INNODB</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token operator">=</span><span class="token number">2</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span><span class="token operator">=</span>utf8<span class="token punctuation">;</span>
+ 
+ 
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> seata_storage<span class="token punctuation">.</span>t_storage<span class="token punctuation">(</span><span class="token punctuation">`</span>id<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>product_id<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>total<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>used<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>residue<span class="token punctuation">`</span><span class="token punctuation">)</span>
+<span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'100'</span><span class="token punctuation">,</span> <span class="token string">'0'</span><span class="token punctuation">,</span> <span class="token string">'100'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<ul>
+<li><code>seata_account</code>：存储账户信息的数据库，并建t_account 表</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> t_account <span class="token punctuation">(</span>
+  <span class="token punctuation">`</span>id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">COMMENT</span> <span class="token string">'id'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>user_id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户id'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>total<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'总额度'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>used<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'已用余额'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>residue<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token string">'0'</span> <span class="token keyword">COMMENT</span> <span class="token string">'剩余可用额度'</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">INNODB</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token operator">=</span><span class="token number">2</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span><span class="token operator">=</span>utf8<span class="token punctuation">;</span>
+ 
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> seata_account<span class="token punctuation">.</span>t_account<span class="token punctuation">(</span><span class="token punctuation">`</span>id<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>user_id<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>total<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>used<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>residue<span class="token punctuation">`</span><span class="token punctuation">)</span>  <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'1000'</span><span class="token punctuation">,</span> <span class="token string">'0'</span><span class="token punctuation">,</span> <span class="token string">'1000'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<blockquote>
+<p>分别建立回滚日志</p>
+</blockquote>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> t_account <span class="token punctuation">(</span>
+  <span class="token punctuation">`</span>id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">COMMENT</span> <span class="token string">'id'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>user_id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'用户id'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>total<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'总额度'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>used<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'已用余额'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span>residue<span class="token punctuation">`</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token string">'0'</span> <span class="token keyword">COMMENT</span> <span class="token string">'剩余可用额度'</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">INNODB</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token operator">=</span><span class="token number">2</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span><span class="token operator">=</span>utf8<span class="token punctuation">;</span>
+ 
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> seata_account<span class="token punctuation">.</span>t_account<span class="token punctuation">(</span><span class="token punctuation">`</span>id<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>user_id<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>total<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>used<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>residue<span class="token punctuation">`</span><span class="token punctuation">)</span>  <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'1000'</span><span class="token punctuation">,</span> <span class="token string">'0'</span><span class="token punctuation">,</span> <span class="token string">'1000'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h3 id="4-4-订单-库存-账户业务微服务建立"><a href="#4-4-订单-库存-账户业务微服务建立" class="headerlink" title="4.4 订单/库存/账户业务微服务建立"></a>4.4 订单/库存/账户业务微服务建立</h3><p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211108212054871.png" alt="image-20211108212054871"></p>
+<p>重点说明：<code>OrderServiceImpl</code></p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>star<span class="token punctuation">.</span>springcloud<span class="token punctuation">.</span>service<span class="token punctuation">.</span>impl<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> com<span class="token punctuation">.</span>star<span class="token punctuation">.</span>springcloud<span class="token punctuation">.</span>dao<span class="token punctuation">.</span>OrderDao<span class="token punctuation">;</span>
+<span class="token keyword">import</span> com<span class="token punctuation">.</span>star<span class="token punctuation">.</span>springcloud<span class="token punctuation">.</span>domain<span class="token punctuation">.</span>Order<span class="token punctuation">;</span>
+<span class="token keyword">import</span> com<span class="token punctuation">.</span>star<span class="token punctuation">.</span>springcloud<span class="token punctuation">.</span>service<span class="token punctuation">.</span>AccountService<span class="token punctuation">;</span>
+<span class="token keyword">import</span> com<span class="token punctuation">.</span>star<span class="token punctuation">.</span>springcloud<span class="token punctuation">.</span>service<span class="token punctuation">.</span>OrderService<span class="token punctuation">;</span>
+<span class="token keyword">import</span> com<span class="token punctuation">.</span>star<span class="token punctuation">.</span>springcloud<span class="token punctuation">.</span>service<span class="token punctuation">.</span>StorageService<span class="token punctuation">;</span>
+<span class="token keyword">import</span> io<span class="token punctuation">.</span>seata<span class="token punctuation">.</span>spring<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>GlobalTransactional<span class="token punctuation">;</span>
+<span class="token keyword">import</span> lombok<span class="token punctuation">.</span>extern<span class="token punctuation">.</span>slf4j<span class="token punctuation">.</span>Slf4j<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>stereotype<span class="token punctuation">.</span>Service<span class="token punctuation">;</span>
+<span class="token keyword">import</span> javax<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>Resource<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">/**
+ * @author Jaqen
+ * @create 2021-11-08-15:05
+ */</span>
+<span class="token annotation punctuation">@Service</span>
+<span class="token annotation punctuation">@Slf4j</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">OrderServiceImpl</span> <span class="token keyword">implements</span> <span class="token class-name">OrderService</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span> OrderDao orderDao<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span> AccountService accountService<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span> StorageService  storageService<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 创建订单->调用库存服务扣减库存->调用账户服务扣减账户余额->修改订单状态
+     * 简单说：
+     * 下订单->减库存->减余额->改状态
+     */</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token annotation punctuation">@GlobalTransactional</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"star-create-order"</span><span class="token punctuation">,</span>rollbackFor <span class="token operator">=</span> Exception<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">create</span><span class="token punctuation">(</span>Order order<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"------->下单开始"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//本应用创建订单</span>
+        orderDao<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>order<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//远程调用库存服务扣减库存</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"------->order-service中扣减库存开始"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        storageService<span class="token punctuation">.</span><span class="token function">decrease</span><span class="token punctuation">(</span>order<span class="token punctuation">.</span><span class="token function">getProductId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>order<span class="token punctuation">.</span><span class="token function">getCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"------->order-service中扣减库存结束"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//远程调用账户服务扣减余额</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"------->order-service中扣减余额开始"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        accountService<span class="token punctuation">.</span><span class="token function">decrease</span><span class="token punctuation">(</span>order<span class="token punctuation">.</span><span class="token function">getUserId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>order<span class="token punctuation">.</span><span class="token function">getMoney</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"------->order-service中扣减余额结束"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//修改订单状态为已完成</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"------->order-service中修改订单状态开始"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        orderDao<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>order<span class="token punctuation">.</span><span class="token function">getUserId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"------->order-service中修改订单状态结束"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"------->下单结束"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<blockquote>
+<p>参考<code>seata-order-service2001</code>建立<code>seata-storage-service2002</code>和<code>seata-account-service2003</code></p>
+</blockquote>
+<h3 id="4-5-测试"><a href="#4-5-测试" class="headerlink" title="4.5 测试"></a>4.5 测试</h3><blockquote>
+<p>正常下单</p>
+</blockquote>
+<p><a href="http://localhost:2001/order/create?userId=1&amp;productId=1&amp;count=10&amp;money=100">http://localhost:2001/order/create?userId=1&amp;productId=1&amp;count=10&amp;money=100</a></p>
+<ul>
+<li>添加超时异常，没加@GlobalTransactional</li>
+</ul>
+<p>当库存和账户金额扣减后，订单状态并没有设置为已经完成，没有从零改为1</p>
+<p>而且由于feign的重试机制，账户余额还有可能被多次扣减</p>
+<ul>
+<li>超时异常，添加@GlobalTransactional</li>
+</ul>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@GlobalTransactional</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"自定义"</span><span class="token punctuation">,</span>rollbackFor <span class="token operator">=</span> Exception<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">create</span><span class="token punctuation">(</span>Order order<span class="token punctuation">)</span><span class="token punctuation">{</span>
+。。。。。。
+<span class="token punctuation">}</span>
+</code></pre>
+<p>下单后数据库数据并没有任何改变，记录都添加不进来</p>
+<h3 id="4-6-补充"><a href="#4-6-补充" class="headerlink" title="4.6 补充"></a>4.6 补充</h3><blockquote>
+<p>分布式事务的执行流程</p>
+</blockquote>
+<ol>
+<li>TM 开启分布式事务（TM 向 TC 注册全局事务记录）；</li>
+<li>按业务场景，编排数据库、服务等事务内资源（RM 向 TC 汇报资源准备状态 ）；</li>
+<li>TM 结束分布式事务，事务一阶段结束（TM 通知 TC 提交/回滚分布式事务）；</li>
+<li>TC 汇总事务信息，决定分布式事务是提交还是回滚；</li>
+<li>TC 通知所有 RM 提交/回滚 资源，事务二阶段结束。</li>
+</ol>
+<blockquote>
+<p>AT模式如何做到对业务的无侵入</p>
+</blockquote>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211108212953865.png" alt="image-20211108212953865"></p>
+<blockquote>
+<p>一阶段</p>
+</blockquote>
+<p>在一阶段，Seata 会拦截“业务 SQL”，<br>1  解析 SQL 语义，找到“业务 SQL”要更新的业务数据，在业务数据被更新前，将其保存成“before image”，<br>2  执行“业务 SQL”更新业务数据，在业务数据更新之后，<br>3  其保存成“after image”，最后生成行锁。<br>以上操作全部在一个数据库事务内完成，这样保证了一阶段操作的原子性。</p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211108213014677.png" alt="image-20211108213014677"></p>
+<blockquote>
+<p>二阶段提交</p>
+</blockquote>
+<p>二阶段如是顺利提交的话，<br>因为“业务 SQL”在一阶段已经提交至数据库，所以Seata框架只需将一阶段保存的快照数据和行锁删掉，完成数据清理即可。</p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211108213036396.png" alt="image-20211108213036396"></p>
+<blockquote>
+<p>二阶段回滚</p>
+</blockquote>
+<p>二阶段回滚：<br>二阶段如果是回滚的话，Seata 就需要回滚一阶段已经执行的“业务 SQL”，还原业务数据。<br>回滚方式便是用“before image”还原业务数据；但在还原前要首先要校验脏写，对比“数据库当前业务数据”和 “after image”，<br>如果两份数据完全一致就说明没有脏写，可以还原业务数据，如果不一致就说明有脏写，出现脏写就需要转人工处理。</p>
+<p><img src="/../images/2021-11-06-springcloud-Alibaba/image-20211108213105322.png" alt="image-20211108213105322"></p>
 </body></html>]]></content>
       <categories>
         <category>微服务</category>
@@ -6670,5 +6972,258 @@ http://www.springframework.org/schema/context/spring-context.xsd<span class="tok
 </code></pre>
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 </body></html>]]></content>
+  </entry>
+  <entry>
+    <title>客户关系管理</title>
+    <url>/2021/11/17/%E5%AE%A2%E6%88%B7%E5%85%B3%E7%B3%BB%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<html><head></head><body><h1 id="客户关系管理"><a href="#客户关系管理" class="headerlink" title="客户关系管理"></a>客户关系管理</h1><h2 id="第一章-客户关系管理理念"><a href="#第一章-客户关系管理理念" class="headerlink" title="第一章 客户关系管理理念"></a>第一章 客户关系管理理念</h2><h3 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li><code>潜在客户</code>是指对企业的产品或服务有需求和购买动机,有可能但还没有产生购买的人群。例如，已经怀孕的母亲很可能就是婴幼儿产品的潜在客户。</li>
+<li><code>目标客户</code>是企业经过挑选后确定的力图开发为现实客户的人群。例如，劳斯莱斯就把具有很高地位的社会名流或取得巨大成就的人士作为自己的目标客户。</li>
+<li><code>现实客户</code>是指已经购买了企业的产品或者服务的人群。</li>
+<li><code>流失客户</code>是指曾经是企业的客户，但由于种种原因，现在不再购买企业的产品或服务的客户。</li>
+<li><code>客户的终生价值</code>是指一个客户一生所能给企业带来的价值,它是以客户带来的收益减去企业为吸引、推销、维系和服务该客户所产生的成本来计算的，并且要将这个现金量折为现值。</li>
+<li><code>客户关系管理</code>是建立在营销思想和信息技术基础之上的先进的管理理念与策略,是专门研究如何建立客户关系、如何维护客户关系、如何挽救客户关系的科学，它将管理的视野从企业的内部延伸、扩展到企业的外部，是企业管理理论发展的新领域。</li>
+</ul>
+<h3 id="简答题"><a href="#简答题" class="headerlink" title="简答题"></a>简答题</h3><blockquote>
+<p>1.简述客户关系管理产生的背景</p>
+</blockquote>
+<p>首先,客户关系管理的产生首先源于市场对客户关系管理的需求,这体现在两个方面上，一方面是客户的重要性，另一方面是客户关系的重要性。<br>其次,信息技术的迅猛发展使企业得以借助先进的技术手段去充分了解和掌握客户信息、发现与挖潜市场机会、规避风险，提高客户满意与忠诚度。<br>总之，在需求拉动、技术推动下，客户关系管理不断演变发展，逐渐形成了一套管理理论体系和应用技术体系。</p>
+<blockquote>
+<p>2.实施客户关系管理的意义何在?</p>
+</blockquote>
+<p>企业实施客户关系管理可以降低企业维系老客户和开发新客户的成本、降低企业与客户的交易成本、促进增量购买和交叉购买、给企业带来源源不断的利润,此外,好的客户关系，使客户对企业抱有好感，那么客户就会降低对产品价格或服务价格的敏感度，使企业能够获得较高的利润。<br>从某种意义上说，企业的命运是建立在与客户长远利益关系基础之上的。吸引和争取新客户、维系和保持老客户是企业生存和发展的使命。企业要想在激烈的市场竞争中保持优势，保持长久的竞争力，保证企业的稳定发展，就必须积极培养和建立客户关系，巩固和发展客户关系，并把良好的客户关系作为企业的宝贵资产和战略资源来进行有效的经营和管理。总之，客户关系管理意义重大。</p>
+<blockquote>
+<p>如何认识客户关系管理</p>
+</blockquote>
+<p>客户关系管理是建立在营销思想和信息技术基础之上的先进的的管理理念与策略，是专门研究如何建立客户关系、如何维护客户关系、如何挽救客户关系的科学，它将管理的视野从企业的内部延伸、扩展到企业的外部，是企业管理理论发展的新领域。<br>客户关系管理的目标是帮助企业拥有大量的、优质的、忠诚的客户。</p>
+<blockquote>
+<p>4.客户关系管理的思路是什么?</p>
+</blockquote>
+<p>首先，客户关系管理必须以营销思想与信息技术为两翼，为支撑;其次，企业应当主动地、有选择地建立客户关系;再次，企业应当积极地维护客户关系;最后，企业还应当及时地挽救客户关系。</p>
+<h2 id="第二章-客户关系管理技术"><a href="#第二章-客户关系管理技术" class="headerlink" title="第二章 客户关系管理技术"></a>第二章 客户关系管理技术</h2><h3 id="名词解释-1"><a href="#名词解释-1" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li><code>客户关系管理系统</code>是以客户数据的管理为核心，利用现代信息技术、网络技术、电子商务、智能管理、系统集成等多种技术，记录企业在市场营销与销售过程中和客户发生的各种交互行为，以及各类有关活动的状态，提供各类数据模型，从而建立一个客户信息的收集、管理、分析、利用的系统，帮助企业实现以客户为中心的管理模式。</li>
+<li><code>数据挖掘</code>是从大型数据库中提取人们感兴趣的知识，这些知识是隐含的、未知的、有用的信息，提取的知识表示为概念、规则、规律、模式等。</li>
+<li><code>客户数据库</code>可以帮助企业了解客户过去的消费行为,而客户过去的购买行为是未来购买模式的最好指示器，因此，企业可通过客户数据库来推测客户未来的消费行为。客户数据库还能反映出每个客户的购买频率、购买量等重要信息，并保存每次交易的记录及客户的反馈情况，通过对客户进行定期跟踪，可使企业对客户的资料有详细全面的了解，利用“数据挖掘技术”和“智能分析”可以发现赢利机会,继而采取相应的营销策略，这就是<code>数据库营销</code>。</li>
+<li><code>呼叫中心</code>，又称客户服务中心，起源于20世纪30年代，最初是把用户的呼叫转接到应答台或者专家处。此后，随着要转接的呼叫和应答增多，开始建立起交互式语音应答系统，这种系统能把客户部分常见问题的应答实现由机器“自动话务员”来应答和处理。</li>
+<li>呼叫中心同互联网结合起来，就形成了<code>互联网呼叫中心</code>，它能够通过互联网实现语音呼叫、文本交谈、电子邮件和回呼等功能，给客户提供方便、快捷的个性化服务，增强业务代表为客户提供帮助的能力。</li>
+</ul>
+<h3 id="简答题-1"><a href="#简答题-1" class="headerlink" title="简答题"></a>简答题</h3><blockquote>
+<p>1.客户关系管理系统的主要功能有哪些?</p>
+</blockquote>
+<ul>
+<li>接触功能</li>
+<li>业务功能</li>
+<li>技术功能</li>
+<li>数据库功能</li>
+</ul>
+<blockquote>
+<p>2.数据管理技术在客户关系管理中是如何应用的?</p>
+</blockquote>
+<ul>
+<li>首先，客户画像。</li>
+<li>其次，精准营销和个性化推荐。</li>
+<li>再次，客户生命周期管理。</li>
+</ul>
+<blockquote>
+<p>3．呼叫中心技术在客户关系管理中是如何应用的?</p>
+</blockquote>
+<ul>
+<li>首先，协调内部管理，为客户提供一站式服务;</li>
+<li>其次，高科技提高企业运作效率，降低企业成本;</li>
+<li>再次，个性化服务提高客户满意度，强化客户忠诚;最后，多种功能提升企业商机，优化资源配置。</li>
+</ul>
+<p>4.移动互联网技术在客户关系管理中是如何应用的?</p>
+<ul>
+<li>首先，移动互联网具有可识别性。</li>
+<li>其次，移动互联网具有可定位性。</li>
+<li>再次，移动互联网具有可移动性。</li>
+</ul>
+<h2 id="第三章-客户的选择"><a href="#第三章-客户的选择" class="headerlink" title="第三章 客户的选择"></a>第三章 客户的选择</h2><h3 id="名词解释-2"><a href="#名词解释-2" class="headerlink" title="名词解释"></a>名词解释</h3><p><code>“好客户”</code>指的是客户本身的“素质”好，能够给企业带来的利润多、价值多、贡献大，而占用企业的资源少、给企业带来的风险小的客户。</p>
+<p><code>“坏客户”</code>就是:只向企业购买很少一部分产品或者服务，但要求却很多，花费了企业高额的服务费用，使企业为其消耗的成本远远超过他们给企业带来的收入;不讲信誉，给企业带来呆账、坏账、死账以及诉讼等，给企业带来负效益，让企业做不擅长或做不了的事，分散企业的注意力，使企业改变方向，与自身的战略和计划相脱离。</p>
+<p>购买量大的客户被称为<code>大客户</code>。</p>
+<p>购买量小的则为<code>小客户</code>。</p>
+<h3 id="简答题-2"><a href="#简答题-2" class="headerlink" title="简答题"></a>简答题</h3><blockquote>
+<p>1.企业为什么要选择客户?</p>
+</blockquote>
+<p>不是所有的购买者都会是企业的客户，也不是所有的客户都能够给企业带来收益，不加选择地建立客户关系可能造成企业定位模糊不清，相反，正确选择客户是成功开发客户、实现客户忠诚的前提，选择正确的客户还能增加企业的赢利能力。</p>
+<blockquote>
+<p>2.为什么大客户不等于“好客户”?</p>
+</blockquote>
+<p>许多大客户可能存在:财务风险大、利润风险大、管理风险大、流失风险大、竞争风险大等缺点。</p>
+<blockquote>
+<p>3.为什么小客户可能是“好客户”?</p>
+</blockquote>
+<p>有些小客户能够给企业带来较多的利润和较大的贡献，而占用企业的资源较少、给企业带来的风险也较小，所以小客户可能是“好客户”。</p>
+<blockquote>
+<p>4.关系客户选择的指导思想是什么?</p>
+</blockquote>
+<p>首先，选择与企业定位一致的客户;其次，选择“好客户”;再次，选择有潜力的客户;第四，选择“门当户对”的客户;最后，选择与“忠诚客户”具有相似特征的客户。</p>
+<h2 id="第四章-客户的开发"><a href="#第四章-客户的开发" class="headerlink" title="第四章 客户的开发"></a>第四章 客户的开发</h2><h3 id="名词解释-3"><a href="#名词解释-3" class="headerlink" title="名词解释"></a>名词解释</h3><p><code>逐户访问法</code>又被称为“地毯式寻找法”，指推销人员在所选择的目标客户群的活动区域内，对目标客户进行挨家挨户的访问，然后进行说服的方法。</p>
+<p><code>咨询寻找法</code>是指利用信息服务机构所提供的有偿咨询服务来寻找目标客户的方法。</p>
+<p><code>猎犬法</code>又称委托助手法,指委托与目标客户有联系的人士协助寻找目标客户的方法。</p>
+<p><code>中心开花</code>法是指在某一特定的目标客户群中选择有影响的人物或组织，并使其成为自己的客户，借助其帮助和协作，将该目标客户群中的其他对象转化为现实客户的方法。</p>
+<h3 id="简答题-3"><a href="#简答题-3" class="headerlink" title="简答题"></a>简答题</h3><blockquote>
+<p>1.什么是营销导向的客户开发策略?</p>
+</blockquote>
+<p>所谓营销导向的开发策略，就是企业通过有吸引力的产品策略、价格策略、分销策略和促销策略，吸引目标客户和潜在客户产生购买行动的过程。营销导向的开发策略特点是“不求人”，是由客户自己主动和自愿地被开发，还很可能是满心欢喜、感激涕零、心花怒放地被开发,所以,营销导向的开发策略是客户开发策略的最高境界,也是获得客户的理想途径。</p>
+<blockquote>
+<p>2．什么是推销导向的客户开发策略?</p>
+</blockquote>
+<p>所谓推销导向的开发策略，就是企业在自己的产品、价格、分销渠道和促销手段没有明显特色或者缺乏吸引力的情况下，通过人员推销的形式，引导或者劝说客户购买，从而将目标客户开发为现实客户的过程。推销导向的开发策略，首先要能够寻找到目标客户，其次是要想办法说服目标客户采取购买行动。</p>
+<blockquote>
+<p>3．寻找客户有哪些途径?说服客户的技巧有哪些?</p>
+</blockquote>
+<p>寻找客户有的途径有:</p>
+<p>​    逐户访问法、咨询寻找法、“猎犬”法、“中心开花”法、会议寻找法、俱乐部寻找法、在亲朋故旧中寻找、资料查询法、电话寻找法、信函寻找法、短信微信寻找法、网络(博客、微博)寻找法、挖对手的客户等。</p>
+<p>说服客户的技巧有：介绍到位，善于倾听，换位思考，投其所好</p>
+<h2 id="第五章-客户的信息"><a href="#第五章-客户的信息" class="headerlink" title="第五章 客户的信息"></a>第五章 客户的信息</h2><h3 id="名词解释-4"><a href="#名词解释-4" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li><code>客户的基本信息</code>包括企业的名称、地址、电话、创立时间、组织方式、业种、资产等。</li>
+<li><code>客户特征</code>指客户的规模、服务区域、经营观念、经营方向、经营特点、企业形象、声誉等。</li>
+<li><code>业务状况</code>指客户的销售能力、销售业绩、发展潜力与优势、存在的问题及未来的对策等。</li>
+<li><code>交易状况</code>指客户的订单记录、交易条件、信用状况及出现过的信用问题、与客户的关系及合作态度、客户对企业及其竞争对手的产品或服务的评价、客户建议与意见等。</li>
+</ul>
+<h3 id="简答题-4"><a href="#简答题-4" class="headerlink" title="简答题"></a>简答题</h3><blockquote>
+<p>1.客户信息的重要性体现在哪些方面?</p>
+</blockquote>
+<p>客户信息是企业决策的基础，是对客户进行分级管理的基础，是与客户沟通的基础，也是实现客户满意的基础，因此，企业应当重视和掌握客户的信息。</p>
+<blockquote>
+<p>2.对个人客户应掌握哪些信息?</p>
+</blockquote>
+<p>个人客户的信息应当包括:基本信息、消费情况、事业情况、家庭情况、生活情况、教育情况、个性情况、人际情况等。</p>
+<blockquote>
+<p>3.对企业客户应掌握哪些信息?</p>
+</blockquote>
+<p>企业客户的信息内容应当包括:基本信息、客户特征、业务状况、交易状况、负责人信息等。</p>
+<blockquote>
+<p>4.收集客户信息有哪些渠道?</p>
+</blockquote>
+<p>收集客户的信息只能从点点滴滴做起，可通过直接渠道和间接渠道来完成。</p>
+<h2 id="第六章-客户的分级"><a href="#第六章-客户的分级" class="headerlink" title="第六章 客户的分级"></a>第六章 客户的分级</h2><h3 id="名词解释-5"><a href="#名词解释-5" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li><code>客户分级</code>是企业依据客户的不同价值，将客户区分为不同的层级，然后分别对不同级别的客户进行管理与服务的过程。</li>
+<li><code>客户分级管理</code>是指企业在依据客户带来价值的多少对客户进行分级的基础上,不是对所有客户平等对待，而是区别对待不同贡献的客户;同时，积极提升各级客户在客户金字塔中的级别。</li>
+<li><code>关键客户</code>是企业的核心客户，一般占企业客户总数的20%，企业80%的利润靠他们贡献，是企业的重点保护对象。关键客户由重要客户和次重要客户构成。</li>
+<li><code>普通客户</code>是除重要客户与次要客户之外的为企业创造最大价值的前50%的客户，一般占客户总数的30%。</li>
+<li><code>小客户</code>是客户金字塔中最底层的客户，指除了上述三种客户外，剩下的后50%的客户。</li>
+</ul>
+<h3 id="简答题-5"><a href="#简答题-5" class="headerlink" title="简答题"></a>简答题</h3><blockquote>
+<p>1.为什么要对客户进行分级?</p>
+</blockquote>
+<p>客户之间的价值是有差别的，企业的资源是有限的，为此，必须对客户进行分级，这样才能为企业合理分配资源提供依据，从而牢牢地抓住有价值的客户。</p>
+<blockquote>
+<p>2.如何对客户分级?</p>
+</blockquote>
+<p>我们将根据客户金字塔模型进行三层级划分,这三层是:关键客户、普通客户和小客户。</p>
+<blockquote>
+<p>3．如何管理各级客户?</p>
+</blockquote>
+<ul>
+<li>关键客户管理的目标是提高关键客户的忠诚度，并且在“保持关系”的基础上，进一步提升关键客户给企业带来的价值。为此，要成立为关键客户服务的专门机构、集中优势资源服务于关键客户、通过沟通和感情交流，密切双方的关系。</li>
+<li>对普通客户的管理,主要强调提升级别和控制成本两个方面——针对有升级潜力的普通客户，要努力培养其成为关键客户;针对没有升级潜力的普通客户，可减少服务、降低服务成本。</li>
+<li>对小客户的管理主要是——针对有升级潜力的“小客户”，要努力培养其成为“普通客户”甚至“关键客户”;针对没有升级潜力的“小客户”，可提高服务价格、降低服务成本。</li>
+</ul>
+<blockquote>
+<p>4.什么是客户分级管理的理想境界?</p>
+</blockquote>
+<p>企业针对不同级别的客户采取分级管理和差异化的激励措施,可以使关键客户自豪地享受企业提供的特殊待遇，并激励他们努力保持这种尊贵地位;同时，刺激有潜力的普通客户向关键客户看齐，鞭策有潜力的小客户向普通客户甚至关键客户看齐，坚决淘汰劣质客户。</p>
+<h2 id="第七章-客户额沟通"><a href="#第七章-客户额沟通" class="headerlink" title="第七章 客户额沟通"></a>第七章 客户额沟通</h2><h3 id="名词解释-6"><a href="#名词解释-6" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li><code>信息沟通</code>是企业把产品或服务的信息传递给客户,也包括客户将其需求或者要求的信息反映给企业。</li>
+<li><code>情感沟通</code>指企业主动采取相关措施，加强与客户的情感交流，加深客户对企业的感情依恋所采取的行动。</li>
+<li><code>理念沟通</code>指企业把其宗旨、理念介绍给客户，并使客户认同和接受所采取的行动。意见沟通指企业主动向客户征求意见，或者客户主动将对企业的意见(包括投诉)反映给企业的行动。</li>
+</ul>
+<h3 id="简答题-6"><a href="#简答题-6" class="headerlink" title="简答题"></a>简答题</h3><blockquote>
+<p>客户沟通的作用与内容是什么？</p>
+</blockquote>
+<p>客户沟通是实现客户满意的基础、是维护客户关系的基础。企业通过与客户沟通，可把企业的产品或服务的信息传递给客户，把企业的宗旨、理念介绍给客户，使客户知晓企业的经营意图，还可以把有关的政策向客户传达、宣传，并主动向客户征求对企业产品或服务及其他方面的意见和建议，理解他们的期望，加强与他们的情感交流。<br>沟通的内容主要是信息沟通、情感沟通、理念沟通、意见沟通，有时还要有政策沟通。</p>
+<blockquote>
+<p>2.企业与客户沟通的途径有哪些?</p>
+</blockquote>
+<p>通过人员与客户沟通、通过活动与客户沟通、通过信函、电话、网络、电邮、微信、博客、呼叫中心等方式与客户沟通、通过广告与客户沟通、通过公共宣传及企业的自办宣传物与客户沟通、通过包装与客户沟通。</p>
+<blockquote>
+<p>3．客户与企业沟通的途径有哪些?</p>
+</blockquote>
+<p>开通免费投诉电话、24小时投诉热线或者网上投诉等、设置意见箱、建议箱、电子邮箱及微信公众号等。</p>
+<blockquote>
+<p>4.处理客户投诉的四步曲</p>
+</blockquote>
+<p>让客户发泄、记录投诉要点判断投诉是否成立、提出并实施可以令客户接受的方案、跟踪服务。</p>
+<h2 id="第八章-客户的满意度"><a href="#第八章-客户的满意度" class="headerlink" title="第八章 客户的满意度"></a>第八章 客户的满意度</h2><h3 id="名词解释-7"><a href="#名词解释-7" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li><code>客户满意</code>是一种心理活动，是客户的需求被满足后形成的愉悦感或状态，是客户的主观感受。当客户的感知没有达到期望时，客户就会不满、失望;当感知与期望一致时，客户是满意的;当感知超出期望时，客户就感到“物超所值”，就会很满意。</li>
+<li><code>客户预期</code>是指客户在购买、消费产品或服务之前对产品或服务的价值、品质、服务、价格等方面的主观认识或预期。</li>
+<li><code>客户感知价值</code>是客户在购买或者消费过程中,企业提供的产品或服务给客户的感觉价值。客户感知价值实际上就是客户的让渡价值,它等于客户购买产品或服务所获得的总价值与客户为购买该产品或服务所付出的总成本之间的差额。</li>
+</ul>
+<h3 id="简答题-7"><a href="#简答题-7" class="headerlink" title="简答题"></a>简答题</h3><blockquote>
+<p>1.影响客户满意的因素有哪些?</p>
+</blockquote>
+<ul>
+<li>客户预期</li>
+<li>客户感知价值。</li>
+</ul>
+<blockquote>
+<p>2.影响客户预期的因素有哪些?</p>
+</blockquote>
+<p>客户的价值观、需求、习惯、偏好、消费阶段;</p>
+<p>客户以往的消费经历、消费经验、消费阅历;他人的介绍;</p>
+<p>企业的宣传;价格、包装、有形展示的线索等。</p>
+<blockquote>
+<p>3．影响客户感知价值的因素有哪些?</p>
+</blockquote>
+<p>客户感知价值受到产品价值、服务价值、人员价值、形象价值、货币成本、时间成本、精神成本、体力成本八个因素的影响。</p>
+<blockquote>
+<p>4.如何让客户满意?</p>
+</blockquote>
+<p>首先，把握客户的预期,其次，让客户感知价值超出客户预期，就能够获得客户的满意。</p>
+<h2 id="第九章-客户的忠诚"><a href="#第九章-客户的忠诚" class="headerlink" title="第九章 客户的忠诚"></a>第九章 客户的忠诚</h2><h3 id="名词解释-8"><a href="#名词解释-8" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li><code>客户忠诚</code>是指客户一再重复购买,而不是偶尔重复购买同一企业的产品或者服务的行为。转换成本指的是客户从一个企业转向另一个企业需要面临多大的障碍或增加多大的成本，是客户为更换企业所需付出的各种代价的总和。</li>
+<li><code>信赖忠诚</code>是指客户在完全满意的基础上,对使其从中受益的一个或几个品牌的产品或者服务情有独钟，并且长期、指向性地重复购买。</li>
+<li><code>势利忠诚</code>是客户为了能够得到某个(些)好处或者害怕有某个(些)损失，而长久地重复购买某一产品或服务的行为。</li>
+<li><code>惰性忠诚</code>是指客户尽管对产品或者服务不满，但是由于本身的惰性而不愿意去寻找其他供应商或者服务商。对于这种忠诚，如果其他企业主动出击，让惰性忠诚者得到更多的实惠，还是容易将他们挖走的。</li>
+<li><code>垄断忠诚</code>是指在卖方占主导地位的市场条件下，或者在不开放的市场条件下，尽管客户不满却因为别无选择，找不到其他替代品，不得已，只能忠诚。</li>
+</ul>
+<h3 id="简答题-8"><a href="#简答题-8" class="headerlink" title="简答题"></a>简答题</h3><blockquote>
+<p>1.客户忠诚的概念是什么?有哪些重要意义?</p>
+</blockquote>
+<p>客户忠诚是指客户一再重复购买,而不是偶尔重复购买同一企业的产品或者服务的行为。</p>
+<p>客户忠诚能确保企业的长久收益、使企业收入增长并获得溢价收益、节省开发成本交易成本和服务成本、降低经营风险并提高效率、获得良好的口碑效应及客户队伍的壮大、为企业发展带来良性循环，保证了企业的可持续发展。可以这么说，忠诚客户的数量决定了企业的生存与发展，忠诚的质量，即忠诚度的高低，决定着企业竞争能力的强弱。</p>
+<blockquote>
+<p>2.影响客户忠诚的因素有哪些?</p>
+</blockquote>
+<p>一般来说，影响客户忠诚的因素有:客户满意度、客户因忠诚能够获得多少利益、客户的信任和情感、客户是否有归属感、客户的转换成本、企业与客户业务联系的紧密程度、员工对企业的忠诚度、企业对客户的忠诚度、客户自身因素等。影响客户忠诚有时是单一因素作用的结果，有些是多个因素共同作用的结果。</p>
+<blockquote>
+<p>3．实现客户忠诚的策略有哪些?</p>
+</blockquote>
+<p>努力实现客户满意、奖励客户的忠诚、增强客户的信任与感情、建立客户组织、提高客户的转换成本、加强业务联系提高不可(易)替代性、加强员工管理、以自己的忠诚换取客户的忠诚。</p>
+<h2 id="第十章-客户的挽回"><a href="#第十章-客户的挽回" class="headerlink" title="第十章 客户的挽回"></a>第十章 客户的挽回</h2><h3 id="名词解释-9"><a href="#名词解释-9" class="headerlink" title="名词解释"></a>名词解释</h3><ul>
+<li><code>客户流失</code>是指客户由于种种原因不再忠诚，而转向购买其他企业的产品或服务的现象。</li>
+<li><code>客户挽回</code>是指企业通过积极的努力促使已经流失的客户回心转意、重新成为企业忠诚客户的活动。</li>
+</ul>
+<h3 id="简答题-9"><a href="#简答题-9" class="headerlink" title="简答题"></a>简答题</h3><blockquote>
+<p>1.客户流失的原因有哪些?</p>
+</blockquote>
+<p>客户流失的原因除了有企业自身的原因外，还有客户本身的原因。</p>
+<p>企业自身的原因包括:客户不满意及其它原因——如客户从忠诚中所获得的利益较少，客户对企业的信任和情感不够深，客户没有归属感觉得自己被轻视</p>
+<p>客户本身造成的,例如——有的客户因为需求转移或消费习惯改变而退出某个市场;有的客户对企业提供的好的服务或产品的差异根本就不在乎，转向其他企业不是因为对原企业不满意，而是因为自己想换“口味”，想尝试一下新的企业的产品或者服务，或者只是想丰富自己的消费经历;有的客户由于搬迁、成长、衰退甚至破产，以及由于客户的采购主管、采购人员的离职等等而导致客户流失。</p>
+<blockquote>
+<p>2.如何看待客户的流失?</p>
+</blockquote>
+<p>客户流失给企业带来很大的负面影响、有些客户的流失是不可避免的、流失客户有被挽回的可能、挽回流失客户是重要的。</p>
+<blockquote>
+<p>3．如何区别对待不同级别客户的流失?</p>
+</blockquote>
+<ul>
+<li>对“关键客户”的流失要极力挽回、</li>
+<li>对“普通客户”的流失要尽力挽回、</li>
+<li>对“小客户”的流失可见机行事、彻底放弃根本不值得挽留的劣质客户</li>
+</ul>
+<blockquote>
+<p>4.怎样挽回流失客户?</p>
+</blockquote>
+<p>首先，找出客户流失的原因，其次，对症下药，亡羊补牢，有针对性地采取有效的挽回措施。</p>
+</body></html>]]></content>
+      <categories>
+        <category>其他</category>
+      </categories>
+      <tags>
+        <tag>CRM</tag>
+      </tags>
   </entry>
 </search>
