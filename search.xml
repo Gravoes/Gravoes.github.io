@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Mysql基础</title>
-    <url>/2021/10/26/Mysql%E5%9F%BA%E7%A1%80/</url>
-    <content><![CDATA[<html><head></head><body><h1 id="Mysql基础"><a href="#Mysql基础" class="headerlink" title="Mysql基础"></a>Mysql基础</h1></body></html>]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-      <tags>
-        <tag>Mysql</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Rabbitmq知识点</title>
     <url>/2021/10/26/Rabbitmq%E7%9F%A5%E8%AF%86%E7%82%B9/</url>
     <content><![CDATA[<html><head></head><body><h2 id="1-Rabbitmq知识点"><a href="#1-Rabbitmq知识点" class="headerlink" title="1.Rabbitmq知识点"></a>1.Rabbitmq知识点</h2><p>RabbitMQ 是一个消息中间件：它接受并转发消息。你可以把它当做一个快递站点，当你要发送一个包 裹时，你把你的包裹放到快递站，快递员最终会把你的快递送到收件人那里，按照这种逻辑 RabbitMQ 是 一个快递站，一个快递员帮你传递快件。RabbitMQ 与快递站的主要区别在于，它不处理快件而是接收， 存储和转发消息数据。</p>
